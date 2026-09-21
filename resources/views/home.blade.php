@@ -16,7 +16,7 @@
         </form>
     @else
         <a href="{{ route('login') }}">Iniciar Sesión</a> | 
-        <a href="{{ route('register') }}">Registrarse</a>
+        <a href="{{ route('registro') }}">Registrarse</a>
     @endauth
 </body>
 </html>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -8,9 +9,9 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function showRegister()
+    public function showRegistro()
     {
-        return view('auth.register');
+        return view('auth.registro');
     }
 
     public function register(Request $request)
@@ -21,11 +22,24 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        User::create([
+        // 1. ASIGNAR A LA VARIABLE $user
+        $user = User::create([
             'name' => $credentials['name'],
             'email' => $credentials['email'],
             'password' => Hash::make($credentials['password']),
         ]);
+
+        // Petición desde Postman / API
+        if ($request->wantsJson()) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Usuario registrado con éxito',
+                'user' => $user,
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+            ], 201);
+        }
 
         return redirect()->route('login')->with('success', 'Registro exitoso. Inicia sesión.');
     }
@@ -43,10 +57,29 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            // Regeneración de ID de sesión para prevenir Session Fixation
-            $request->session()->regenerate();
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
 
+            if ($request->wantsJson()) {
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+                return response()->json([
+                    'message' => 'Inicio de sesión exitoso',
+                    'user' => $user,
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                ], 200);
+            }
+
+            $request->session()->regenerate();
             return redirect()->intended('/dashboard');
+        }
+
+        // Si la autenticación falla en API
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Las credenciales no coinciden con nuestros registros.'
+            ], 401);
         }
 
         return back()->withErrors([
@@ -56,9 +89,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        if ($request->wantsJson()) {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json(['message' => 'Sesión cerrada correctamente']);
+        }
 
-        // Invalidate de la sesión y regeneración del token CSRF
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
