@@ -14,7 +14,7 @@
             <div class="brand-wrapper">
                 <div class="brand-icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 2 2 002-2v-6a2 2 2 00-2-2H6a2 2 2 00-2 2v6a2 2 2 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
                 </div>
                 <span class="brand-title">Sistema Auth</span>
@@ -79,7 +79,7 @@
             <div class="kpi-card">
                 <div class="kpi-data">
                     <span class="kpi-label">Archivos en Galería</span>
-                    <span class="kpi-value">{{ count($media) }} elementos</span>
+                    <span class="kpi-value">{{ count($media ?? []) }} elementos</span>
                 </div>
                 <div class="kpi-icon kpi-icon-purple">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,14 +98,14 @@
                 </div>
                 
                 <a href="{{ route('admin.media.subirImagen') }}" class="btn-upload">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     Subir Nueva Imagen
                 </a>
             </div>
 
-            @if(count($media) > 0)
+            @if(isset($media) && count($media) > 0)
                 <div class="gallery-grid">
                     @foreach($media as $item)
                         <article class="media-card">
@@ -123,9 +123,64 @@
             @else
                 <div class="empty-state">
                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                     <p>No se encontraron imágenes en la galería.</p>
+                </div>
+            @endif
+        </section>
+
+        <!-- Módulo: Gestión de Correos Electrónicos -->
+        <section class="gallery-panel" style="margin-top: 30px;">
+            <div class="gallery-header">
+                <div class="gallery-title-area">
+                    <h2>Correos Electrónicos</h2>
+                    <p>Administra y revisa los envíos de correo realizados desde la plataforma.</p>
+                </div>
+                
+                <!-- Redirección al formulario del nuevo módulo de emails -->
+                <a href="{{ route('admin.media.emails') }}" class="btn-upload">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Enviar Correo Electrónico
+                </a>
+            </div>
+
+            <!-- Listado de Correos Enviados -->
+            @if(isset($emails) && count($emails) > 0)
+                <div class="emails-list-container">
+                    <div class="table-responsive">
+                        <table class="emails-table">
+                            <thead>
+                                <tr>
+                                    <th>Destinatario</th>
+                                    <th>Asunto</th>
+                                    <th>Fecha de Envío</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($emails as $email)
+                                    <tr>
+                                        <td>{{ $email->recipient }}</td>
+                                        <td>{{ $email->subject }}</td>
+                                        <td>{{ $email->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <span class="badge badge-success">Enviado</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @else
+                <div class="empty-state">
+                    <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <p>No se han registrado envíos de correos electrónicos aún.</p>
                 </div>
             @endif
         </section>

@@ -44,5 +44,10 @@ Route::middleware(Authenticate::class)->group(function () {
     // Ruta para procesar y guardar el archivo (la que usa tu formulario)
     Route::post('/admin/media', [MediaController::class, 'store'])->name('admin.media.store');
 
+    Route::get('/admin/emails', [MediaController::class, 'emails'])->name('admin.media.emails');
+
+    // Ruta para procesar el envío del formulario
+    Route::post('/admin/emails/send', [MediaController::class, 'sendEmail'])->name('admin.media.sendEmail');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

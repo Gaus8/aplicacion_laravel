@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Media; // Asegúrate de importar tu modelo si vas a guardar en base de datos
+use App\Models\Media; 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMessage;
 
 class MediaController extends Controller
 {
@@ -48,5 +50,37 @@ class MediaController extends Controller
         return redirect()
             ->back() // O puedes usar ->route('admin.media.subirImgen') si prefieres
             ->with('success', 'Archivo cargado correctamente.');
+    }
+
+    /**
+     * Muestra la vista de envío de correos.
+     */
+    public function emails()
+    {
+        return view('admin.emails');
+    }
+
+    /**
+     * Procesa el envío del correo desde el formulario.
+     */
+    public function sendEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'recipient' => 'required|email',
+            'subject'   => 'required|string|max:255',
+            'message'   => 'required|string',
+        ]);
+
+        $data = [
+            'name'    => auth()->user()->name,
+            'email'   => auth()->user()->email,
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+        ];
+
+        // Envío de correo electrónico
+        Mail::to($validated['recipient'])->send(new ContactMessage($data));
+
+        return redirect()->route('dashboard')->with('success', 'Correo electrónico enviado correctamente.');
     }
 }

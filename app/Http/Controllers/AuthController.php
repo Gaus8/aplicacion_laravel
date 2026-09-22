@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\ContactMessage;
 
 class AuthController extends Controller
 {
@@ -99,5 +100,33 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    // Muestra la vista del formulario de envíos (emails.blade.php)
+    public function emails()
+    {
+        return view('admin.emails');
+    }
+
+    // Procesa el envío del correo desde el formulario
+    public function sendEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'recipient' => 'required|email',
+            'subject'   => 'required|string|max:255',
+            'message'   => 'required|string',
+        ]);
+
+        $data = [
+            'name'    => auth()->user()->name,
+            'email'   => auth()->user()->email,
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+        ];
+
+        // Envía el correo usando el Mailable generado
+        Mail::to($validated['recipient'])->send(new ContactMessage($data));
+
+        return redirect()->route('dashboard')->with('success', 'Correo electrónico enviado correctamente.');
     }
 }
