@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registro | Auth System</title>
+    <link rel="stylesheet" href="{{ asset('css/registro.css') }}">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body>
 
-    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md border border-gray-200">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Crear una cuenta</h2>
+    <div class="glow-effect"></div>
+
+    <div class="auth-card">
+        
+        <div class="card-header">
+            <div class="brand-badge">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+            </div>
+            <h2 class="card-title">Crear una cuenta</h2>
+            <p class="card-subtitle">Completa el formulario para registrarte</p>
+        </div>
 
         @if ($errors->any())
-            <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 text-sm rounded-lg">
-                <ul class="list-disc list-inside">
+            <div class="alert alert-danger">
+                <ul class="alert-list">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -21,42 +32,37 @@
             </div>
         @endif
 
-        <form action="{{ route('registro') }}" method="POST" class="space-y-4">
+        <form action="{{ route('registro') }}" method="POST">
             @csrf
 
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
-                <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <div class="form-group">
+                <label for="name" class="form-label">Nombre completo</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" required placeholder="Juan Pérez" class="form-input">
             </div>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <div class="form-group">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="nombre@ejemplo.com" class="form-input">
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                <input type="password" id="password" name="password" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••" class="form-input">
             </div>
 
-            <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirmar Contraseña</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <div class="form-group">
+                <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required placeholder="••••••••" class="form-input">
             </div>
 
-            <button type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200">
+            <button type="submit" class="btn-submit">
                 Registrarse
             </button>
         </form>
 
-        <p class="text-sm text-center text-gray-600 mt-6">
+        <p class="card-footer-text">
             ¿Ya tienes cuenta? 
-            <a href="{{ route('login') }}" class="text-blue-600 hover:underline font-medium">Inicia sesión aquí</a>
+            <a href="{{ route('login') }}" class="auth-link">Inicia sesión aquí</a>
         </p>
     </div>
 
