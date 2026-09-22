@@ -15,13 +15,15 @@ class ContactMessage extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
+    public array $files; // 1. Declaramos la propiedad $files
 
     /**
      * Create a new message instance.
      */
-    public function __construct($data)
+    public function __construct($data, array $files = []) // 2. Recibimos $files opcionalmente
     {
         $this->data = $data;
+        $this->files = $files; // 3. Asignamos la variable
     }
 
     /**
@@ -42,8 +44,8 @@ class ContactMessage extends Mailable
         return new Content(
             view: 'emails.contact-message',
             with: [
-                'subject' => $this->data['subject'],
-                'contactMessage' => $this->data['message'],
+                'subject' => $this->data['subject'] ?? '',
+                'contactMessage' => $this->data['message'] ?? '',
             ],
         );
     }
@@ -55,8 +57,15 @@ class ContactMessage extends Mailable
      */
     public function attachments(): array
     {
-        return [];
-    }
+        $attachments = [];
 
-    
+        // Ahora $this->files siempre existirá como un array
+        foreach ($this->files as $file) {
+            $attachments[] = Attachment::fromPath($file->getRealPath())
+                ->as($file->getClientOriginalName())
+                ->withMime($file->getClientMimeType());
+        }
+
+        return $attachments;
+    }
 }

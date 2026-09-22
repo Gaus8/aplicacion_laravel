@@ -24,7 +24,7 @@ body {
 }
 
 .email-header {
-    background-color: #0d4722; /* Color corporativo según la plantilla */
+    background-color: #0d4722;
     color: #ffd700;
     padding: 24px;
     text-align: center;
@@ -50,6 +50,16 @@ body {
     margin-top: 15px;
 }
 
+.attachments-container {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #f0fdf4;
+    border: 1px dashed #16a34a;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #15803d;
+}
+
 .field-label {
     font-weight: bold;
     color: #0d4722;
@@ -64,7 +74,6 @@ body {
     color: #666666;
 }
 
-/* Responsividad para móviles */
 @media only screen and (max-width: 600px) {
     .email-container {
         width: 100% !important;

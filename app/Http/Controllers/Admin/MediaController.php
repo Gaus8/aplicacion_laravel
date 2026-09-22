@@ -65,10 +65,12 @@ class MediaController extends Controller
      */
     public function sendEmail(Request $request)
     {
+        // Validación con soporte de tipo y tamaño de archivo (máx 10MB)
         $validated = $request->validate([
-            'recipient' => 'required|email',
-            'subject'   => 'required|string|max:255',
-            'message'   => 'required|string',
+            'recipient'     => 'required|email',
+            'subject'       => 'required|string|max:255',
+            'message'       => 'required|string',
+            'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,zip|max:10240',
         ]);
 
         $data = [
@@ -78,9 +80,12 @@ class MediaController extends Controller
             'message' => $validated['message'],
         ];
 
-        // Envío de correo electrónico
-        Mail::to($validated['recipient'])->send(new ContactMessage($data));
+        // Obtener archivos adjuntos enviados
+        $files = $request->file('attachments') ?? [];
 
-        return redirect()->route('dashboard')->with('success', 'Correo electrónico enviado correctamente.');
+        // Enviar correo adjuntando los archivos dinámicamente
+        Mail::to($validated['recipient'])->send(new ContactMessage($data, $files));
+
+        return redirect()->route('dashboard')->with('success', 'Correo electrónico con adjuntos enviado correctamente.');
     }
 }
