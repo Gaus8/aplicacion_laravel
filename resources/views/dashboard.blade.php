@@ -29,7 +29,9 @@
 
     <!-- Contenido Principal del Dashboard -->
     <main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+        
+        <!-- Tarjeta de Bienvenida e Info del Usuario -->
+        <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Panel de Control (Dashboard)</h1>
             <p class="text-gray-600 mb-6">
                 ¡Has iniciado sesión con éxito! Esta es una vista protegida mediante el middleware <code class="bg-gray-100 px-2 py-1 rounded text-red-600">auth</code>.
@@ -46,6 +48,44 @@
                 </div>
             </div>
         </div>
+
+        <!-- Galería del Dashboard -->
+        <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+            
+            <!-- Encabezado de la Galería con el Botón de Subir -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h2 class="text-2xl font-bold text-gray-800">Galería del dashboard</h2>
+                
+                <a href="{{ route('admin.media.subirImagen') }}" 
+                   class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow transition duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Subir Nueva Imagen
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                @foreach($media as $item)
+                    <article class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                        <div>
+                            <!-- Imagen enlazada para abrir el archivo original en otra pestaña al hacer clic -->
+                            <a href="{{ Storage::url($item->path) }}" target="_blank">
+                                <img src="{{ Storage::url($item->path) }}" 
+                                     alt="{{ $item->name }}" 
+                                     class="w-full h-48 object-cover rounded-lg mb-3 border border-gray-200 hover:opacity-90 transition">
+                            </a>
+                            
+                            <!-- Solo muestra el nombre -->
+                            <h3 class="text-base font-semibold text-gray-800 text-center truncate" title="{{ $item->name }}">
+                                {{ $item->name }}
+                            </h3>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+
     </main>
 
 </body>
