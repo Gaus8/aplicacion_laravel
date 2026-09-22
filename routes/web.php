@@ -27,6 +27,8 @@ Route::middleware(Authenticate::class)->group(function () {
     Route::get('/admin/dashboard', function (Request $request) {
         // Obtenemos los archivos multimedia para la galería
         $media = \App\Models\Media::all();
+        // Obtenemos los correos enviados para la sección de emails
+        $emails = \App\Models\EmailSent::latest()->get();   
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -36,7 +38,7 @@ Route::middleware(Authenticate::class)->group(function () {
         }
 
         // Pasamos la variable $media a la vista con compact('media')
-        return view('dashboard', compact('media'));
+        return view('dashboard', compact('media', 'emails'));
     })->name('dashboard');
 
     Route::get('/admin/subir-imagen', [MediaController::class, 'create'])->name('admin.media.subirImagen');
