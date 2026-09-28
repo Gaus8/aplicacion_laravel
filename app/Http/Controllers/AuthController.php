@@ -61,6 +61,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             /** @var \App\Models\User $user */
             $user = Auth::user();
+            if (!$user->is_active) {
+                Auth::logout();
+                $auditLogger->record('auth.login.failed', 'failure', null, 'Intento de inicio de sesión');
+                if ($request->wantsJson()) return response()->json(['message' => 'Las credenciales no coinciden con nuestros registros.'], 401);
+                return back()->withErrors(['email' => 'Las credenciales no coinciden con nuestros registros.'])->onlyInput('email');
+            }
             $auditLogger->record('auth.login.succeeded', 'success', $user, 'Inicio de sesión');
 
             if ($request->wantsJson()) {

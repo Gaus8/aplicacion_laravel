@@ -7,10 +7,12 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    protected $attributes = ['is_active' => true];
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -23,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
     ];
 
     /**
@@ -45,6 +48,17 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return ($this->is_active ?? true) && $this->roles()->whereHas('permissions', fn ($query) => $query->where('name', $permission))->exists();
     }
 }

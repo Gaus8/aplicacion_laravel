@@ -1,6 +1,6 @@
 # Módulo 5 — Publicaciones / Noticias
 
-Estado: implementación lista para revisión.
+Estado: módulo cerrado.
 
 - [x] CRUD con estados borrador, revisión, publicada y archivada.
 - [x] Slug único, categoría y autor relacionados.
@@ -8,4 +8,4 @@ Estado: implementación lista para revisión.
 - [x] Solo publicaciones publicadas y cuya fecha ya llegó son públicas.
 - [x] Listado `/noticias` y detalle `/noticias/{slug}`.
 - [x] Pruebas de flujo editorial, validación, acceso y vistas públicas.
-- [ ] Revisión funcional.
+- [x] Revisión funcional.

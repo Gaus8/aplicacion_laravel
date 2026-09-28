@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\SocialLink;
+use App\Models\SeoSetting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 
@@ -22,7 +23,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('layouts.public', function ($view): void {
-            $view->with('socialLinks', SocialLink::query()->active()->get());
+            $view->with('socialLinks', SocialLink::query()->active()->get())
+                ->with('seoSettings', SeoSetting::query()->first());
         });
     }
 }

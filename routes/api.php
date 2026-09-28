@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureAdminPermission;
 
 // Rutas públicas
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
@@ -14,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'message' => 'Bienvenido al Dashboard',
             'user' => $request->user()
         ], 200);
-    });
+    })->middleware(EnsureAdminPermission::class)->name('api.dashboard');
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

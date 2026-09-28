@@ -4,7 +4,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', config('app.name', 'CMS Core'))</title>
+    @php
+        $seoTitle = trim($__env->yieldContent('title')) ?: ($seoSettings?->default_title ?? config('app.name'));
+        $seoDescription = trim($__env->yieldContent('meta_description')) ?: ($seoSettings?->default_description ?? '');
+        $seoTemplate = $seoSettings?->title_template ?? '%s | '.config('app.name');
+        $canonicalBase = rtrim($seoSettings?->canonical_base_url ?: config('app.url'), '/');
+        $canonicalUrl = $canonicalBase.'/'.ltrim(request()->path() === '/' ? '' : request()->path(), '/');
+    @endphp
+    <title>{{ sprintf($seoTemplate, $seoTitle) }}</title>
+    @if($seoDescription)<meta name="description" content="{{ $seoDescription }}">@endif
+    <meta name="robots" content="{{ $seoSettings?->robots_directive ?? 'index,follow' }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <meta property="og:site_name" content="{{ $seoSettings?->site_name ?? config('app.name') }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    @if($seoDescription)<meta property="og:description" content="{{ $seoDescription }}">@endif
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    @if($seoSettings?->og_image_path)<meta property="og:image" content="{{ asset(Storage::disk('public')->url($seoSettings->og_image_path)) }}">@endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="flex min-h-screen flex-col bg-surface text-on-surface antialiased">
