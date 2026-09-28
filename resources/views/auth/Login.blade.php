@@ -33,7 +33,7 @@
 
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <x-checkbox label="Recordarme en este equipo" name="remember" value="1" @if(old('remember')) checked @endif />
-                <a href="#recuperar-contrasena" class="text-sm font-medium text-secondary underline-offset-4 transition hover:text-secondary-container hover:underline">¿Olvidaste tu contraseña?</a>
+                <a href="{{ route('password.request') }}" class="text-sm font-medium text-secondary underline-offset-4 transition hover:text-secondary-container hover:underline">¿Olvidaste tu contraseña?</a>
             </div>
 
             <x-button type="submit" size="lg" class="w-full">Ingresar <span aria-hidden="true">→</span></x-button>

@@ -20,6 +20,10 @@
                     <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="m4 17 5-5 3 3 3-4 5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span data-sidebar-label class="whitespace-nowrap">Multimedia</span>
                 </a>
+                <a href="{{ route('admin.smtp.edit') }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs('admin.smtp.*'), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs('admin.smtp.*')]) aria-current="{{ request()->routeIs('admin.smtp.*') ? 'page' : 'false' }}" title="Configuración SMTP">
+                    <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><path d="M4 6.5h16v11H4z" stroke="currentColor" stroke-width="1.7"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span data-sidebar-label class="whitespace-nowrap">Correo SMTP</span>
+                </a>
             </nav>
             <div class="border-t border-slate-200 p-3">
                 <button type="button" data-admin-sidebar-toggle aria-label="Contraer navegación" aria-expanded="true" class="hidden h-10 w-full items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 lg:flex">

@@ -21,20 +21,21 @@
 - [ ] SEO
 - [ ] Usuarios
 - [ ] Roles y permisos
-- [ ] SMTP
-- [ ] OTP
+- [x] SMTP
+- [ ] OTP (implementación lista, pendiente de revisión)
 - [ ] Auditoría
 - [ ] Dashboard
 - [ ] Hardening
 - [ ] Testing
 - [ ] Despliegue
 ## Módulo actual
-SMTP (pendiente de revisión)
+Recuperación de contraseña por OTP (pendiente de revisión)
 ## Decisiones técnicas vigentes
 - ...
 ## Rutas importantes
 - `/admin/media`: galería Multimedia (módulo cerrado).
-- `/admin/settings/smtp`: configuración de correo SMTP (pendiente de revisión).
+- `/admin/settings/smtp`: configuración de correo SMTP (módulo cerrado).
+- `/password/forgot`, `/password/otp` y `/password/reset`: recuperación de contraseña por OTP (pendiente de revisión).
 ## Servicios compartidos
 - `App\Services\SmtpMailer`: usa la configuración activa para los envíos existentes; no guarda contraseñas en texto plano.
 ## Pendientes
@@ -42,4 +43,4 @@ SMTP (pendiente de revisión)
 ## Última prueba exitosa
 - Fecha: 2026-09-28
 - Comando: `php artisan test`
-- Resultado: 12 pruebas y 43 aserciones aprobadas; SMTP pendiente de revisión.
+- Resultado: 18 pruebas y 102 aserciones aprobadas; recuperación OTP pendiente de revisión.

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PasswordRecoveryController;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,14 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     // Limitación a 5 intentos por minuto
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+
+    Route::get('/password/forgot', [PasswordRecoveryController::class, 'requestForm'])->name('password.request');
+    Route::post('/password/forgot', [PasswordRecoveryController::class, 'sendCode'])->middleware('throttle:3,1')->name('password.email');
+    Route::get('/password/otp', [PasswordRecoveryController::class, 'otpForm'])->name('password.otp.form');
+    Route::post('/password/otp', [PasswordRecoveryController::class, 'verifyCode'])->middleware('throttle:10,1')->name('password.otp.verify');
+    Route::post('/password/otp/resend', [PasswordRecoveryController::class, 'resendCode'])->middleware('throttle:3,1')->name('password.otp.resend');
+    Route::get('/password/reset', [PasswordRecoveryController::class, 'resetForm'])->name('password.reset.form');
+    Route::put('/password/reset', [PasswordRecoveryController::class, 'resetPassword'])->name('password.update');
 });
 
 // Rutas protegidas

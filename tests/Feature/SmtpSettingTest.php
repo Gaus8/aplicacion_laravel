@@ -25,7 +25,8 @@ class SmtpSettingTest extends TestCase
             ->get(route('admin.smtp.edit'))
             ->assertOk()
             ->assertSeeText('Configuración de correo')
-            ->assertSeeText('Multimedia');
+            ->assertSeeText('Multimedia')
+            ->assertSeeText('Correo SMTP');
     }
 
     public function test_authenticated_user_can_save_encrypted_smtp_credentials(): void
