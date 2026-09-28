@@ -31,4 +31,5 @@
             </div>
         </div>
     </section>
+    @include('public.partials.testimonials')
 @endsection

@@ -14,7 +14,13 @@
                 <span class="grid h-9 w-9 place-items-center rounded-md bg-primary-container text-white" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="M12 2.75 20 7.3v9.4L12 21.25 4 16.7V7.3l8-4.55Z" stroke="currentColor" stroke-width="1.7"/><path d="m8 9.2 4-2.3 4 2.3v5.6l-4 2.3-4-2.3V9.2Z" stroke="currentColor" stroke-width="1.5"/><path d="m8 9.2 4 2.3 4-2.3M12 11.5v5.6" stroke="currentColor" stroke-width="1.3"/></svg></span>
                 CMS Core
             </a>
-            <nav aria-label="Navegación principal" class="flex items-center gap-2">
+            <nav aria-label="Navegación principal" class="flex items-center gap-1 sm:gap-2">
+                <a href="{{ route('about.public') }}" class="hidden rounded-md px-2 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 md:inline-flex">Nosotros</a>
+                <a href="{{ route('posts.public.index') }}" class="hidden rounded-md px-2 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 md:inline-flex">Noticias</a>
+                <a href="{{ route('videos.public.index') }}" class="hidden rounded-md px-2 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 lg:inline-flex">Videos</a>
+                <a href="{{ route('team.public.index') }}" class="hidden rounded-md px-2 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 lg:inline-flex">Equipo</a>
+                <a href="{{ route('contact.create') }}" class="hidden rounded-md px-2 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 sm:inline-flex">Contacto</a>
+                @foreach($socialLinks ?? [] as $socialLink)<a href="{{ $socialLink->url }}" target="_blank" rel="noopener noreferrer" class="hidden rounded-md px-2 py-2 text-xs font-medium text-secondary hover:bg-secondary-fixed sm:inline-flex" aria-label="{{ $socialLink->label }}">{{ $socialLink->label }}</a>@endforeach
                 @auth
                     <a href="{{ route('dashboard') }}" class="rounded-md px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900">Administración</a>
                     <form action="{{ route('logout') }}" method="POST">@csrf<x-button type="submit" variant="secondary" size="sm">Cerrar sesión</x-button></form>
@@ -27,7 +33,12 @@
 
     <main class="flex flex-1 flex-col">@yield('content')</main>
 
-    <footer class="border-t border-slate-200 bg-white px-4 py-5 text-center text-xs text-slate-500">© {{ date('Y') }} CMS Core</footer>
+    <footer class="border-t border-slate-200 bg-white px-4 py-6 text-center text-xs text-slate-500">
+        <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
+            <span>© {{ date('Y') }} CMS Core</span>
+            <nav aria-label="Redes sociales" class="flex flex-wrap justify-center gap-3">@foreach($socialLinks ?? [] as $socialLink)<a href="{{ $socialLink->url }}" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-600 hover:text-secondary">{{ $socialLink->label }}</a>@endforeach</nav>
+        </div>
+    </footer>
     @stack('scripts')
 </body>
 </html>

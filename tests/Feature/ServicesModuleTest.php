@@ -95,12 +95,12 @@ class ServicesModuleTest extends TestCase
             ->assertSeeInOrder(['Servicio inicial', 'Servicio al final']);
     }
 
-    public function test_service_admin_link_is_not_exposed_until_the_module_is_closed(): void
+    public function test_closed_service_module_is_exposed_in_the_admin_sidebar(): void
     {
         $this->actingAs(User::factory()->create())
             ->get(route('admin.services.index'))
             ->assertOk()
-            ->assertDontSee('href="'.route('admin.services.index').'"', false);
+            ->assertSee('href="'.route('admin.services.index').'"', false);
     }
 
     private function validPayload(array $overrides = []): array

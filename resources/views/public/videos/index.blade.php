@@ -1,0 +1,6 @@
+@extends('layouts.public')
+@section('title', 'Videos')
+@section('content')
+<section class="mx-auto w-full max-w-7xl flex-1 px-4 py-12 sm:px-6 lg:px-8"><x-breadcrumb :items="[['label' => 'Inicio', 'url' => route('home')], ['label' => 'Videos']]"/><h1 class="mt-5 font-display text-headline-xl-mobile font-bold text-slate-900 sm:text-headline-xl">Videos</h1>
+@if($videos->isEmpty())<div class="mt-8"><x-empty-state title="No hay videos publicados" description="Vuelve pronto para ver nuevos videos."/></div>@else<div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">@foreach($videos as $video)<x-card padding="none" class="overflow-hidden"><div class="aspect-video bg-slate-100"><iframe class="h-full w-full" src="{{ $video->embed_url }}" title="{{ $video->title }}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe></div><div class="p-5"><h2 class="font-display text-headline-md font-semibold text-slate-900">{{ $video->title }}</h2>@if($video->description)<p class="mt-2 whitespace-pre-line text-sm leading-6 text-slate-600">{{ $video->description }}</p>@endif</div></x-card>@endforeach</div><div class="mt-8">{{ $videos->links() }}</div>@endif</section>
+@endsection
