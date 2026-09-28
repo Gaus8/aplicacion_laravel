@@ -24,6 +24,10 @@
                     <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><path d="M4 6.5h16v11H4z" stroke="currentColor" stroke-width="1.7"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span data-sidebar-label class="whitespace-nowrap">Correo SMTP</span>
                 </a>
+                <a href="{{ route('admin.audit.index') }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs('admin.audit.*'), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs('admin.audit.*')]) aria-current="{{ request()->routeIs('admin.audit.*') ? 'page' : 'false' }}" title="Auditoría">
+                    <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12h6m-6 3h4m-4-6h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <span data-sidebar-label class="whitespace-nowrap">Auditoría</span>
+                </a>
             </nav>
             <div class="border-t border-slate-200 p-3">
                 <button type="button" data-admin-sidebar-toggle aria-label="Contraer navegación" aria-expanded="true" class="hidden h-10 w-full items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 lg:flex">

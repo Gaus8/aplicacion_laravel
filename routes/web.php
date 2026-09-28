@@ -5,10 +5,10 @@ use App\Http\Controllers\PasswordRecoveryController;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\SmtpSettingController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\DashboardController;
 
 // Vista principal accesible para todos
 Route::get('/', function () {
@@ -43,22 +43,7 @@ Route::middleware(Authenticate::class)->group(function () {
     Route::get('/admin/media/{media}/file', [MediaController::class, 'file'])->name('admin.media.file');
     Route::delete('/admin/media/{media}', [MediaController::class, 'destroy'])->name('admin.media.destroy');
 
-    Route::get('/admin/dashboard', function (Request $request) {
-        // Obtenemos los archivos multimedia para la galería
-        $media = \App\Models\Media::all();
-        // Obtenemos los correos enviados para la sección de emails
-        $emails = \App\Models\EmailSent::latest()->get();   
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'message' => 'Usuario Autenticado. Bienvenido al Dashboard',
-                'user' => $request->user()
-            ], 200);
-        }
-
-        // Pasamos la variable $media a la vista con compact('media')
-        return view('dashboard', compact('media', 'emails'));
-    })->name('dashboard');
+    Route::get('/admin/dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('/admin/subir-imagen', [MediaController::class, 'create'])->name('admin.media.subirImagen');
     
