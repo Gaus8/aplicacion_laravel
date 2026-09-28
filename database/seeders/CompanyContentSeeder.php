@@ -56,8 +56,8 @@ class CompanyContentSeeder extends Seeder
                 'body' => 'Nacimos con una idea sencilla: la tecnología funciona mejor cuando parte de las personas y los objetivos que debe ayudar. Desde entonces, acompañamos a organizaciones en sus procesos de transformación, combinando estrategia, ingeniería y colaboración cercana.\n\nTrabajamos con equipos multidisciplinarios y prácticas transparentes para entregar soluciones útiles, seguras y sostenibles en el tiempo.',
                 'mission' => 'Ayudar a las organizaciones a avanzar con soluciones digitales seguras, simples de usar y hechas para generar valor duradero.',
                 'vision' => 'Ser el socio tecnológico de confianza para empresas que construyen un futuro más conectado, eficiente y humano.',
-                'image_path' => null,
-                'image_alt' => null,
+                'image_path' => 'seed/usf-tech-hero.svg',
+                'image_alt' => 'Ilustración panorámica de las conexiones y plataformas digitales que diseñamos',
                 'active' => true,
             ],
         );
@@ -79,6 +79,8 @@ class CompanyContentSeeder extends Seeder
                 'category' => 'ingenieria-de-software',
                 'excerpt' => 'Un buen producto digital empieza por entender el problema. Te contamos cómo conectar estrategia, diseño e ingeniería desde el primer día.',
                 'body' => "Los proyectos de software más exitosos no comienzan con una lista de funcionalidades, sino con una conversación sobre las personas y los procesos que necesitan mejorar.\n\nEn USF Tech Solutions trabajamos con ciclos cortos de descubrimiento y entrega. Validamos supuestos temprano, construimos una base técnica clara y medimos el valor que cada incremento aporta al negocio.\n\nEl resultado es un producto que puede evolucionar con confianza: útil para quienes lo usan, mantenible para quienes lo construyen y alineado con los objetivos de la organización.",
+                'cover_path' => 'seed/article-software.svg',
+                'cover_alt' => 'Ilustración de módulos de software conectados sobre un fondo azul',
                 'days_ago' => 8,
             ],
             [
@@ -87,6 +89,8 @@ class CompanyContentSeeder extends Seeder
                 'category' => 'nube-y-plataformas',
                 'excerpt' => 'La nube aporta agilidad cuando la migración responde a necesidades concretas y cuenta con una hoja de ruta medible.',
                 'body' => "Una migración cloud bien planeada combina objetivos de negocio, preparación de aplicaciones y gobierno de costos. Antes de mover cargas, conviene identificar dependencias, requisitos de disponibilidad y controles de seguridad.\n\nUna estrategia por etapas permite aprender con servicios acotados, automatizar tareas repetibles y reducir riesgos operativos. La observabilidad y la optimización continua ayudan a mantener el valor después del lanzamiento.\n\nCada organización tiene un punto de partida distinto. Por eso, el mejor plan es el que prioriza resultados verificables y deja espacio para adaptarse.",
+                'cover_path' => 'seed/article-cloud.svg',
+                'cover_alt' => 'Ilustración de una nube conectada a servicios digitales',
                 'days_ago' => 15,
             ],
             [
@@ -95,6 +99,8 @@ class CompanyContentSeeder extends Seeder
                 'category' => 'seguridad-digital',
                 'excerpt' => 'Integrar seguridad al trabajo diario ayuda a detectar riesgos antes y a crear experiencias digitales más confiables.',
                 'body' => "La seguridad efectiva no es una revisión aislada al final del proyecto. Se construye con decisiones cotidianas: limitar accesos, validar entradas, proteger secretos y mantener dependencias actualizadas.\n\nLos equipos pueden incorporar análisis automatizados, revisión de cambios y modelos de amenazas ligeros en su flujo habitual. Estas prácticas hacen visibles los riesgos sin frenar la entrega.\n\nCon prioridades claras y aprendizaje continuo, cada lanzamiento fortalece la confianza de clientes, colaboradores y socios.",
+                'cover_path' => 'seed/article-security.svg',
+                'cover_alt' => 'Ilustración de un escudo que protege una red de servicios',
                 'days_ago' => 23,
             ],
         ];
@@ -180,7 +186,7 @@ class CompanyContentSeeder extends Seeder
 
     private function installSampleImages(): void
     {
-        foreach (['usf-tech-hero.svg', 'team-valentina.svg', 'team-andres.svg', 'team-camila.svg'] as $image) {
+        foreach (['usf-tech-hero.svg', 'team-valentina.svg', 'team-andres.svg', 'team-camila.svg', 'article-software.svg', 'article-cloud.svg', 'article-security.svg'] as $image) {
             $source = __DIR__.'/assets/'.$image;
             $contents = is_file($source) ? file_get_contents($source) : false;
 

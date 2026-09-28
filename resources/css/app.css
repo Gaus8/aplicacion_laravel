@@ -139,3 +139,22 @@
     body { @apply bg-surface font-sans text-on-surface antialiased; }
     :focus-visible { @apply outline-2 outline-offset-2 outline-secondary; }
 }
+
+@keyframes usf-float {
+    0%, 100% { transform: scale(1.015) translateY(0); }
+    50% { transform: scale(1.045) translateY(-8px); }
+}
+
+@keyframes usf-fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.home-hero-image { animation: usf-float 20s ease-in-out infinite; }
+.home-reveal { animation: usf-fade-up 700ms cubic-bezier(.2,.75,.25,1) both; }
+.home-story-image { box-shadow: 0 24px 70px -38px rgb(15 23 42 / 55%); }
+
+@media (prefers-reduced-motion: reduce) {
+    .home-hero-image,
+    .home-reveal { animation: none; }
+}

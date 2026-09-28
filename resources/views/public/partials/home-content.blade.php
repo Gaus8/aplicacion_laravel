@@ -1,5 +1,5 @@
 @if($aboutPage)
-    <section class="mx-auto grid w-full max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[.8fr_1.2fr] lg:px-8">
+    <section class="home-reveal mx-auto grid w-full max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[.8fr_1.2fr] lg:px-8">
         <div>
             <x-badge variant="primary">Quiénes somos</x-badge>
             <h2 class="mt-4 font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">{{ $aboutPage->title }}</h2>
@@ -14,7 +14,7 @@
 @endif
 
 @if($posts->isNotEmpty())
-    <section class="border-y border-slate-200 bg-surface-container-low">
+    <section class="home-reveal border-y border-slate-200 bg-surface-container-low">
         <div class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div><x-badge variant="primary">Ideas y perspectivas</x-badge><h2 class="mt-4 font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">Lo último en tecnología</h2></div>
@@ -22,11 +22,12 @@
             </div>
             <div class="mt-8 grid gap-5 md:grid-cols-3">
                 @foreach($posts as $post)
-                    <x-card class="flex h-full flex-col">
-                        @if($post->category)<x-badge variant="info">{{ $post->category->name }}</x-badge>@endif
+                    <x-card padding="none" class="flex h-full flex-col overflow-hidden">
+                        @if($post->cover_path)<a href="{{ route('posts.public.show', ['post' => $post->slug]) }}"><img src="{{ Storage::disk('public')->url($post->cover_path) }}" alt="{{ $post->cover_alt }}" class="aspect-[16/9] w-full object-cover" loading="lazy"></a>@endif
+                        <div class="flex flex-1 flex-col p-5">@if($post->category)<x-badge variant="info">{{ $post->category->name }}</x-badge>@endif
                         <h3 class="mt-4 font-display text-headline-md font-semibold text-slate-900"><a class="hover:text-secondary" href="{{ route('posts.public.show', ['post' => $post->slug]) }}">{{ $post->title }}</a></h3>
                         <p class="mt-3 flex-1 text-sm leading-6 text-slate-600">{{ $post->excerpt }}</p>
-                        <p class="mt-5 text-xs text-slate-500">{{ $post->published_at?->format('d/m/Y') }}</p>
+                        <p class="mt-5 text-xs text-slate-500">{{ $post->published_at?->format('d/m/Y') }}</p></div>
                     </x-card>
                 @endforeach
             </div>
@@ -35,7 +36,7 @@
 @endif
 
 @if($videos->isNotEmpty())
-    <section class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section class="home-reveal mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-end justify-between gap-4"><div><x-badge variant="primary">En acción</x-badge><h2 class="mt-4 font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">Conoce nuestras ideas</h2></div><a href="{{ route('videos.public.index') }}" class="text-sm font-semibold text-secondary hover:underline">Ver galería de videos <span aria-hidden="true">→</span></a></div>
         <div class="mt-8 grid gap-5 md:grid-cols-2">
             @foreach($videos as $video)
@@ -46,7 +47,7 @@
 @endif
 
 @if($teamMembers->isNotEmpty())
-    <section class="border-y border-slate-200 bg-surface-container-low">
+    <section class="home-reveal border-y border-slate-200 bg-surface-container-low">
         <div class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-end justify-between gap-4"><div><x-badge variant="primary">Personas que hacen posible el cambio</x-badge><h2 class="mt-4 font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">Un equipo, muchas perspectivas</h2></div><a href="{{ route('team.public.index') }}" class="text-sm font-semibold text-secondary hover:underline">Conoce al equipo <span aria-hidden="true">→</span></a></div>
             <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

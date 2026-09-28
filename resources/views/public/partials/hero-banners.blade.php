@@ -4,7 +4,7 @@
         <div class="relative overflow-hidden rounded-xl bg-primary-container shadow-card" data-hero-carousel>
             @foreach($banners as $index => $banner)
                 <article class="relative min-h-[26rem] items-center overflow-hidden {{ $index === 0 ? 'flex' : 'hidden' }}" data-hero-slide aria-hidden="{{ $index === 0 ? 'false' : 'true' }}" aria-roledescription="diapositiva" aria-label="{{ $index + 1 }} de {{ $banners->count() }}">
-                    <img src="{{ Storage::disk('public')->url($banner->image_path) }}" alt="{{ $banner->image_alt }}" class="absolute inset-0 h-full w-full object-cover" @if($index !== 0) loading="lazy" @endif>
+                    <img src="{{ Storage::disk('public')->url($banner->image_path) }}" alt="{{ $banner->image_alt }}" class="home-hero-image absolute inset-0 h-full w-full object-cover" @if($index !== 0) loading="lazy" @endif>
                     <div class="absolute inset-0 bg-gradient-to-r from-primary-container/95 via-primary-container/70 to-transparent"></div>
                     <div class="relative z-10 max-w-3xl px-6 py-14 text-white sm:px-12 sm:py-20">
                         <h2 class="font-display text-headline-xl-mobile font-bold tracking-tight sm:text-headline-xl">{{ $banner->title }}</h2>

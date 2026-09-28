@@ -64,4 +64,30 @@ class CompanyContentSeederTest extends TestCase
             ->assertSeeText('Mariana López')
             ->assertSeeText('GitHub');
     }
+
+    public function test_seeded_public_pages_show_content_instead_of_empty_states(): void
+    {
+        Artisan::call('db:seed', ['--force' => true]);
+
+        $this->get(route('about.public'))
+            ->assertOk()
+            ->assertSeeText('Tecnología con propósito, equipo y visión')
+            ->assertSeeText('Ayudar a las organizaciones a avanzar con soluciones digitales seguras')
+            ->assertSee('seed/usf-tech-hero.svg');
+
+        $this->get(route('posts.public.index'))
+            ->assertOk()
+            ->assertSeeText('De la idea al producto: cómo construir software que sí resuelve')
+            ->assertSee('seed/article-software.svg');
+
+        $this->get(route('team.public.index'))
+            ->assertOk()
+            ->assertSeeText('Valentina Ríos')
+            ->assertSee('seed/team-valentina.svg');
+
+        $this->get(route('videos.public.index'))
+            ->assertOk()
+            ->assertSee('youtube-nocookie.com/embed/M7lc1UVf-VE', false)
+            ->assertSeeText('Tecnología que transforma negocios');
+    }
 }
