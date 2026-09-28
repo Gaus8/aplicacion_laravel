@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\ResetPasswordWithOtpRequest;
 use App\Http\Requests\Auth\VerifyPasswordOtpRequest;
 use App\Models\PasswordRecoveryOtp;
 use App\Models\User;
+use App\Services\AuditLogger;
 use App\Services\SmtpMailer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,11 +28,12 @@ class PasswordRecoveryController extends Controller
         return view('auth.password-recovery.request');
     }
 
-    public function sendCode(RequestPasswordOtpRequest $request, SmtpMailer $smtpMailer)
+    public function sendCode(RequestPasswordOtpRequest $request, SmtpMailer $smtpMailer, AuditLogger $auditLogger)
     {
         $email = $request->validated('email');
         $request->session()->put('password_recovery.email', $email);
         $request->session()->forget('password_recovery.verified');
+        $auditLogger->record('auth.password_recovery.requested', 'warning', null, 'Recuperación solicitada');
 
         $userExists = User::query()->where('email', $email)->exists();
         if ($userExists && $smtpMailer->configured()) {
@@ -51,10 +53,11 @@ class PasswordRecoveryController extends Controller
         return view('auth.password-recovery.otp', ['maskedEmail' => $this->maskEmail($email)]);
     }
 
-    public function verifyCode(VerifyPasswordOtpRequest $request)
+    public function verifyCode(VerifyPasswordOtpRequest $request, AuditLogger $auditLogger)
     {
         $email = (string) $request->session()->get('password_recovery.email');
         if ($email === '') {
+            $auditLogger->record('auth.password_recovery.code_rejected', 'failure', null, 'Código rechazado');
             return redirect()->route('password.request')->withErrors(['code' => 'El código no es válido o ya venció. Solicita otro.']);
         }
 
@@ -69,20 +72,28 @@ class PasswordRecoveryController extends Controller
                 $challenge->save();
             }
 
+            $auditLogger->record('auth.password_recovery.code_rejected', 'failure', null, 'Código rechazado');
             return back()->withErrors(['code' => 'El código no es válido o ya venció. Solicita otro.']);
         }
 
         $challenge->verified_at = now();
         $challenge->save();
+        $auditLogger->record(
+            'auth.password_recovery.code_verified',
+            'success',
+            User::query()->where('email', $email)->first(),
+            'Código de recuperación verificado'
+        );
         $request->session()->put('password_recovery.verified', true);
         $request->session()->regenerate();
 
         return redirect()->route('password.reset.form');
     }
 
-    public function resendCode(ResendPasswordOtpRequest $request, SmtpMailer $smtpMailer)
+    public function resendCode(ResendPasswordOtpRequest $request, SmtpMailer $smtpMailer, AuditLogger $auditLogger)
     {
         $email = (string) $request->session()->get('password_recovery.email');
+        $auditLogger->record('auth.password_recovery.resent', 'warning', null, 'Reenvío solicitado');
         if ($email !== '' && User::query()->where('email', $email)->exists() && $smtpMailer->configured()) {
             $this->issueCode($email, $smtpMailer);
         }
@@ -99,7 +110,7 @@ class PasswordRecoveryController extends Controller
         return view('auth.password-recovery.reset');
     }
 
-    public function resetPassword(ResetPasswordWithOtpRequest $request)
+    public function resetPassword(ResetPasswordWithOtpRequest $request, AuditLogger $auditLogger)
     {
         $email = (string) $request->session()->get('password_recovery.email');
         $user = User::query()->where('email', $email)->first();
@@ -111,6 +122,7 @@ class PasswordRecoveryController extends Controller
         $user->password = Hash::make($request->validated('password'));
         $user->save();
         $user->tokens()->delete();
+        $auditLogger->record('auth.password_reset.completed', 'success', $user, 'Contraseña restablecida');
         PasswordRecoveryOtp::query()->where('email', $email)->delete();
         $request->session()->forget('password_recovery');
 

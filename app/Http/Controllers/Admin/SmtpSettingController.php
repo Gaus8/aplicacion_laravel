@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TestSmtpSettingRequest;
 use App\Http\Requests\Admin\UpdateSmtpSettingRequest;
 use App\Models\SmtpSetting;
+use App\Services\AuditLogger;
 use App\Services\SmtpMailer;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
@@ -21,7 +22,7 @@ class SmtpSettingController extends Controller
         return view('admin.settings.smtp', compact('setting'));
     }
 
-    public function update(UpdateSmtpSettingRequest $request)
+    public function update(UpdateSmtpSettingRequest $request, AuditLogger $auditLogger)
     {
         $data = $request->validated();
         $setting = SmtpSetting::query()->first() ?? new SmtpSetting();
@@ -45,11 +46,15 @@ class SmtpSettingController extends Controller
         $setting->from_name = $data['from_name'];
         $setting->is_active = (bool) ($data['is_active'] ?? false);
         $setting->save();
+        $auditLogger->record('smtp.settings.updated', 'success', $request->user(), 'Configuración SMTP', [
+            'smtp_active' => $setting->is_active,
+            'smtp_authentication_required' => $setting->authentication_required,
+        ]);
 
         return redirect()->route('admin.smtp.edit')->with('success', 'La configuración SMTP se guardó correctamente.');
     }
 
-    public function test(TestSmtpSettingRequest $request, SmtpMailer $mailer)
+    public function test(TestSmtpSettingRequest $request, SmtpMailer $mailer, AuditLogger $auditLogger)
     {
         $setting = SmtpSetting::query()->first();
         if (!$setting) {
@@ -67,6 +72,12 @@ class SmtpSettingController extends Controller
 
         $setting->last_tested_at = now();
         $setting->save();
+        $auditLogger->record(
+            'smtp.connection.tested',
+            $setting->last_test_status === 'success' ? 'success' : 'failure',
+            $request->user(),
+            'Prueba de conexión SMTP'
+        );
 
         return redirect()->route('admin.smtp.edit')->with($setting->last_test_status === 'success' ? 'success' : 'error', $message);
     }

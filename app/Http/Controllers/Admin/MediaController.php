@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use App\Mail\ContactMessage;
 use App\Services\SmtpMailer;
+use App\Services\AuditLogger;
 use Throwable;
 
 class MediaController extends Controller
@@ -43,14 +44,14 @@ class MediaController extends Controller
     /**
      * Procesa, valida y guarda el archivo.
      */
-    public function store(StoreMediaRequest $request)
+    public function store(StoreMediaRequest $request, AuditLogger $auditLogger)
     {
         $validated = $request->validated();
         $file = $request->file('file');
         $path = $file->store('media', 'public');
 
         try {
-            Media::create([
+            $media = Media::create([
                 'name' => $validated['name'],
                 'path' => $path,
                 'mime_type' => $file->getMimeType(),
@@ -61,16 +62,24 @@ class MediaController extends Controller
             throw $exception;
         }
 
+        $auditLogger->record('media.uploaded', 'success', $request->user(), 'Elemento multimedia', [
+            'media_id' => $media->getKey(),
+        ]);
+
         return redirect()->route('admin.media.index')->with('success', 'Imagen cargada correctamente.');
     }
 
-    public function destroy(Media $media)
+    public function destroy(Media $media, AuditLogger $auditLogger)
     {
         Gate::authorize('delete', $media);
 
         $path = $media->path;
+        $mediaId = $media->getKey();
         DB::transaction(fn () => $media->delete());
         Storage::disk('public')->delete($path);
+        $auditLogger->record('media.deleted', 'success', request()->user(), 'Elemento multimedia', [
+            'media_id' => $mediaId,
+        ]);
 
         return redirect()->route('admin.media.index')->with('success', 'Imagen eliminada correctamente.');
     }
@@ -96,7 +105,7 @@ class MediaController extends Controller
     /**
      * Procesa el envío del correo desde el formulario.
      */
-    public function sendEmail(Request $request, SmtpMailer $smtpMailer)
+    public function sendEmail(Request $request, SmtpMailer $smtpMailer, AuditLogger $auditLogger)
     {
         $validated = $request->validate([
             'recipient' => 'required|email',
@@ -118,11 +127,14 @@ class MediaController extends Controller
         $smtpMailer->mailer()->to($validated['recipient'])->send(new ContactMessage($data, $files));
 
         // 2. REGISTRAR EN LA BASE DE DATOS
-        \App\Models\EmailSent::create([
+        $sentEmail = \App\Models\EmailSent::create([
             'user_id'   => auth()->id(),
             'recipient' => $validated['recipient'],
             'subject'   => $validated['subject'],
             'message'   => $validated['message'],
+        ]);
+        $auditLogger->record('email.sent', 'success', $request->user(), 'Correo enviado', [
+            'email_sent_id' => $sentEmail->getKey(),
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Correo electrónico enviado y registrado correctamente.');

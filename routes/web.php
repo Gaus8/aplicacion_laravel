@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\SmtpSettingController;
+use App\Http\Controllers\Admin\AuditLogController;
 
 // Vista principal accesible para todos
 Route::get('/', function () {
@@ -36,6 +37,7 @@ Route::middleware(Authenticate::class)->group(function () {
     Route::get('/admin/settings/smtp', [SmtpSettingController::class, 'edit'])->name('admin.smtp.edit');
     Route::put('/admin/settings/smtp', [SmtpSettingController::class, 'update'])->name('admin.smtp.update');
     Route::post('/admin/settings/smtp/test', [SmtpSettingController::class, 'test'])->middleware('throttle:3,1')->name('admin.smtp.test');
+    Route::get('/admin/audit', [AuditLogController::class, 'index'])->name('admin.audit.index');
 
     Route::get('/admin/media', [MediaController::class, 'index'])->name('admin.media.index');
     Route::get('/admin/media/{media}/file', [MediaController::class, 'file'])->name('admin.media.file');

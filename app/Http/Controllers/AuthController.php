@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\ContactMessage;
+use App\Services\AuditLogger;
 
 class AuthController extends Controller
 {
@@ -50,7 +51,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function login(Request $request, AuditLogger $auditLogger)
     {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -60,6 +61,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             /** @var \App\Models\User $user */
             $user = Auth::user();
+            $auditLogger->record('auth.login.succeeded', 'success', $user, 'Inicio de sesión');
 
             if ($request->wantsJson()) {
                 $token = $user->createToken('auth_token')->plainTextToken;
@@ -76,6 +78,8 @@ class AuthController extends Controller
             return redirect()->intended('/admin/dashboard');
         }
 
+        $auditLogger->record('auth.login.failed', 'failure', null, 'Intento de inicio de sesión');
+
         // Si la autenticación falla en API
         if ($request->wantsJson()) {
             return response()->json([
@@ -88,8 +92,11 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request, AuditLogger $auditLogger)
     {
+        $user = $request->user();
+        $auditLogger->record('auth.logout', 'success', $user, 'Cierre de sesión');
+
         if ($request->wantsJson()) {
             $request->user()->currentAccessToken()->delete();
             return response()->json(['message' => 'Sesión cerrada correctamente']);
