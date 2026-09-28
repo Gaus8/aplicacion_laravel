@@ -15,7 +15,12 @@
                 <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary-container text-white" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="M12 2.75 20 7.3v9.4L12 21.25 4 16.7V7.3l8-4.55Z" stroke="currentColor" stroke-width="1.7"/><path d="m8 9.2 4-2.3 4 2.3v5.6l-4 2.3-4-2.3V9.2Z" stroke="currentColor" stroke-width="1.5"/><path d="m8 9.2 4 2.3 4-2.3M12 11.5v5.6" stroke="currentColor" stroke-width="1.3"/></svg></span>
                 <span data-sidebar-label class="whitespace-nowrap font-display text-lg font-semibold tracking-tight text-slate-900">CMS Core</span>
             </div>
-            <nav aria-label="Navegación administrativa" class="flex-1 px-3 py-5"></nav>
+            <nav aria-label="Navegación administrativa" class="flex-1 space-y-1 px-3 py-5">
+                <a href="{{ route('admin.media.index') }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs('admin.media.*'), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs('admin.media.*')]) aria-current="{{ request()->routeIs('admin.media.*') ? 'page' : 'false' }}" title="Multimedia">
+                    <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="m4 17 5-5 3 3 3-4 5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span data-sidebar-label class="whitespace-nowrap">Multimedia</span>
+                </a>
+            </nav>
             <div class="border-t border-slate-200 p-3">
                 <button type="button" data-admin-sidebar-toggle aria-label="Contraer navegación" aria-expanded="true" class="hidden h-10 w-full items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 lg:flex">
                     <svg data-sidebar-chevron viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>

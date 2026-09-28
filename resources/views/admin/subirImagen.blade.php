@@ -4,10 +4,11 @@
 
 @section('content')
     <div class="mx-auto max-w-3xl space-y-6">
-        <x-breadcrumb :items="[['label' => 'Administración', 'url' => route('dashboard')], ['label' => 'Galería', 'url' => route('dashboard')], ['label' => 'Subir imagen']]" />
+        <x-breadcrumb :items="[['label' => 'Administración', 'url' => route('dashboard')], ['label' => 'Galería multimedia', 'url' => route('admin.media.index')], ['label' => 'Subir imagen']]" />
         <header><h1 class="font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">Subir imagen</h1><p class="mt-2 text-sm text-slate-600">Añade una imagen a la galería multimedia.</p></header>
 
         <x-card title="Detalles del archivo" description="Completa el nombre y selecciona la imagen que quieres cargar.">
+            @if(session('success'))<x-alert class="mb-5" variant="success" title="Carga completada">{{ session('success') }}</x-alert>@endif
             @if($errors->any())<x-alert class="mb-5" variant="danger" title="No se pudo guardar el archivo">Revisa la información e inténtalo nuevamente.</x-alert>@endif
             <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                 @csrf
@@ -23,7 +24,7 @@
                     @error('file')<p class="mt-1.5 text-xs text-rose-700">{{ $message }}</p>@enderror
                     <div id="preview-wrapper" class="mt-4 hidden overflow-hidden rounded-lg border border-slate-200 bg-white p-2"><img id="preview" src="#" alt="Vista previa de la imagen seleccionada" class="max-h-80 w-full rounded object-contain"></div>
                 </div>
-                <div class="flex justify-end gap-3 border-t border-slate-100 pt-5"><a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</a><x-button type="submit">Subir archivo</x-button></div>
+                <div class="flex justify-end gap-3 border-t border-slate-100 pt-5"><a href="{{ route('admin.media.index') }}" class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</a><x-button type="submit">Subir archivo</x-button></div>
             </form>
         </x-card>
     </div>

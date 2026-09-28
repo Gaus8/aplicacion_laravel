@@ -6,6 +6,7 @@ use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\SmtpSettingController;
 
 // Vista principal accesible para todos
 Route::get('/', function () {
@@ -22,6 +23,14 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 // Rutas protegidas
 Route::middleware(Authenticate::class)->group(function () {
     Route::view('/admin/design-system', 'admin.design-system')->name('admin.design-system');
+
+    Route::get('/admin/settings/smtp', [SmtpSettingController::class, 'edit'])->name('admin.smtp.edit');
+    Route::put('/admin/settings/smtp', [SmtpSettingController::class, 'update'])->name('admin.smtp.update');
+    Route::post('/admin/settings/smtp/test', [SmtpSettingController::class, 'test'])->middleware('throttle:3,1')->name('admin.smtp.test');
+
+    Route::get('/admin/media', [MediaController::class, 'index'])->name('admin.media.index');
+    Route::get('/admin/media/{media}/file', [MediaController::class, 'file'])->name('admin.media.file');
+    Route::delete('/admin/media/{media}', [MediaController::class, 'destroy'])->name('admin.media.destroy');
 
     Route::get('/admin/dashboard', function (Request $request) {
         // Obtenemos los archivos multimedia para la galería

@@ -30,13 +30,13 @@
 
         <x-card title="Galería de archivos" description="Archivos multimedia cargados en la plataforma." padding="none">
             <x-slot:actions>
-                <a href="{{ route('admin.media.subirImagen') }}" class="inline-flex items-center gap-2 rounded-md bg-secondary px-3.5 py-2 text-sm font-medium text-on-secondary shadow-sm transition hover:bg-secondary-container"><span aria-hidden="true">＋</span>Subir imagen</a>
+                <div class="flex items-center gap-2"><a href="{{ route('admin.media.index') }}" class="rounded-md border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">Ver galería</a><a href="{{ route('admin.media.subirImagen') }}" class="inline-flex items-center gap-2 rounded-md bg-secondary px-3.5 py-2 text-sm font-medium text-on-secondary shadow-sm transition hover:bg-secondary-container"><span aria-hidden="true">＋</span>Subir imagen</a></div>
             </x-slot:actions>
             @if(isset($media) && count($media) > 0)
                 <div class="grid gap-4 border-t border-slate-100 p-5 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach($media as $item)
                         <article class="overflow-hidden rounded-lg border border-slate-200 bg-white transition hover:shadow-card">
-                            <a href="{{ Storage::url($item->path) }}" target="_blank" rel="noopener noreferrer" class="block aspect-[16/10] bg-surface-container"><img src="{{ Storage::url($item->path) }}" alt="{{ $item->name }}" class="h-full w-full object-cover"></a>
+                            <a href="{{ route('admin.media.file', $item) }}" target="_blank" rel="noopener noreferrer" class="block aspect-[16/10] bg-surface-container"><img src="{{ route('admin.media.file', $item) }}" alt="{{ $item->name }}" class="h-full w-full object-cover"></a>
                             <div class="px-4 py-3"><h3 class="truncate text-sm font-semibold text-slate-800" title="{{ $item->name }}">{{ $item->name }}</h3></div>
                         </article>
                     @endforeach

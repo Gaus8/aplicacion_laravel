@@ -3,53 +3,86 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\IndexMediaRequest;
+use App\Http\Requests\Admin\StoreMediaRequest;
 use Illuminate\Http\Request;
 use App\Models\Media; 
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use App\Mail\ContactMessage;
+use App\Services\SmtpMailer;
+use Throwable;
 
 class MediaController extends Controller
 {
+    public function index(IndexMediaRequest $request)
+    {
+        Gate::authorize('viewAny', Media::class);
+
+        $search = trim((string) $request->validated('search', ''));
+        $media = Media::query()
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('admin.media.index', compact('media', 'search'));
+    }
+
     /**
      * Muestra el formulario de carga.
      */
     public function create()
     {
+        Gate::authorize('create', Media::class);
+
         return view('admin.subirImagen'); // Asegúrate de que coincida con el nombre real de tu archivo Blade
     }
 
     /**
      * Procesa, valida y guarda el archivo.
      */
-    public function store(Request $request)
+    public function store(StoreMediaRequest $request)
     {
-        // 1. La validación va AQUÍ adentro, dentro de la función store
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'file' => [
-                'required',
-                'file',
-                'mimes:jpg,jpeg,png,webp,gif',
-                'max:5120'
-            ],
-        ]);
-
-        // 2. Procesamos el archivo
+        $validated = $request->validated();
         $file = $request->file('file');
         $path = $file->store('media', 'public');
 
-        // 3. Guardamos en la base de datos usando el modelo
-        Media::create([
-            'name' => $validated['name'],
-            'path' => $path,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-        ]);
+        try {
+            Media::create([
+                'name' => $validated['name'],
+                'path' => $path,
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+            ]);
+        } catch (Throwable $exception) {
+            Storage::disk('public')->delete($path);
+            throw $exception;
+        }
 
-        // 4. Redireccionamos con un mensaje de éxito
-        return redirect()
-            ->back() // O puedes usar ->route('admin.media.subirImgen') si prefieres
-            ->with('success', 'Archivo cargado correctamente.');
+        return redirect()->route('admin.media.index')->with('success', 'Imagen cargada correctamente.');
+    }
+
+    public function destroy(Media $media)
+    {
+        Gate::authorize('delete', $media);
+
+        $path = $media->path;
+        DB::transaction(fn () => $media->delete());
+        Storage::disk('public')->delete($path);
+
+        return redirect()->route('admin.media.index')->with('success', 'Imagen eliminada correctamente.');
+    }
+
+    public function file(Media $media)
+    {
+        Gate::authorize('view', $media);
+
+        return Storage::disk('public')->response($media->path, null, [
+            'Content-Type' => $media->mime_type ?: 'application/octet-stream',
+            'X-Content-Type-Options' => 'nosniff',
+        ], 'inline');
     }
 
     /**
@@ -63,7 +96,7 @@ class MediaController extends Controller
     /**
      * Procesa el envío del correo desde el formulario.
      */
-    public function sendEmail(Request $request)
+    public function sendEmail(Request $request, SmtpMailer $smtpMailer)
     {
         $validated = $request->validate([
             'recipient' => 'required|email',
@@ -82,7 +115,7 @@ class MediaController extends Controller
         $files = $request->file('attachments') ?? [];
 
         // 1. Enviar el email
-        Mail::to($validated['recipient'])->send(new ContactMessage($data, $files));
+        $smtpMailer->mailer()->to($validated['recipient'])->send(new ContactMessage($data, $files));
 
         // 2. REGISTRAR EN LA BASE DE DATOS
         \App\Models\EmailSent::create([

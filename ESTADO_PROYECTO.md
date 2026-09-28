@@ -12,7 +12,7 @@
 - [ ] Nosotros
 - [ ] Categorías
 - [ ] Publicaciones
-- [ ] Multimedia
+- [x] Multimedia
 - [ ] Videos
 - [ ] Equipo
 - [ ] Testimonios
@@ -29,16 +29,17 @@
 - [ ] Testing
 - [ ] Despliegue
 ## Módulo actual
-[NOMBRE]
+SMTP (pendiente de revisión)
 ## Decisiones técnicas vigentes
 - ...
 ## Rutas importantes
-- ...
+- `/admin/media`: galería Multimedia (módulo cerrado).
+- `/admin/settings/smtp`: configuración de correo SMTP (pendiente de revisión).
 ## Servicios compartidos
-- ...
+- `App\Services\SmtpMailer`: usa la configuración activa para los envíos existentes; no guarda contraseñas en texto plano.
 ## Pendientes
 - ...
 ## Última prueba exitosa
-- Fecha:
-- Comando:
-- Resultado:
+- Fecha: 2026-09-28
+- Comando: `php artisan test`
+- Resultado: 12 pruebas y 43 aserciones aprobadas; SMTP pendiente de revisión.
