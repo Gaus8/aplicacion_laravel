@@ -22,8 +22,8 @@ class SecurityHeaders
         $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
         $response->headers->set('X-DNS-Prefetch-Control', 'off');
 
-        $viteOrigins = app()->environment('local', 'testing') ? ' http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173' : '';
-        $viteConnections = app()->environment('local', 'testing') ? ' ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173' : '';
+        $viteOrigins = app()->environment('local', 'testing') ? ' http://localhost:5173 http://127.0.0.1:5173' : '';
+        $viteConnections = app()->environment('local', 'testing') ? ' ws://localhost:5173 ws://127.0.0.1:5173' : '';
         $policy = [
             "default-src 'self'",
             "base-uri 'self'",
