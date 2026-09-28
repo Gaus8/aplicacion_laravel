@@ -7,7 +7,7 @@
 ## Módulos cerrados
 - [ Hecho] Fase 0 - Base
 - [ ] Login seguro
-- [ ] Banner
+- [ ] Banner (implementación lista, pendiente de revisión)
 - [ ] Servicios
 - [ ] Nosotros
 - [ ] Categorías
@@ -29,7 +29,7 @@
 - [ ] Testing
 - [ ] Despliegue
 ## Módulo actual
-Hardening (pendiente de revisión)
+Banner / Hero (pendiente de revisión)
 ## Decisiones técnicas vigentes
 - ...
 ## Rutas importantes
@@ -38,6 +38,7 @@ Hardening (pendiente de revisión)
 - `/password/forgot`, `/password/otp` y `/password/reset`: recuperación de contraseña por OTP (módulo cerrado).
 - `/admin/audit`: historial de auditoría (módulo cerrado).
 - `/admin/dashboard`: resumen con datos existentes (módulo cerrado).
+- `/admin/banners`: administración de banners (pendiente de revisión).
 ## Servicios compartidos
 - `App\Services\SmtpMailer`: usa la configuración activa para los envíos existentes; no guarda contraseñas en texto plano.
 ## Pendientes
@@ -45,4 +46,4 @@ Hardening (pendiente de revisión)
 ## Última prueba exitosa
 - Fecha: 2026-09-28
 - Comando: `php artisan test`
-- Resultado: 31 pruebas y 175 aserciones aprobadas; Dashboard cerrado y Hardening listo para revisión.
+- Resultado: 42 pruebas y 235 aserciones aprobadas; Banner / Hero listo para revisión.

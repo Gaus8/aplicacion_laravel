@@ -9,11 +9,11 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\SmtpSettingController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\HomeController;
 
 // Vista principal accesible para todos
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 // Rutas para usuarios invitados (RedirectIfAuthenticated)
 Route::middleware(RedirectIfAuthenticated::class)->group(function () {
@@ -32,6 +32,13 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
 // Rutas protegidas
 Route::middleware(Authenticate::class)->group(function () {
+    Route::get('/admin/banners', [BannerController::class, 'index'])->name('admin.banners.index');
+    Route::get('/admin/banners/create', [BannerController::class, 'create'])->name('admin.banners.create');
+    Route::post('/admin/banners', [BannerController::class, 'store'])->middleware('throttle:10,1')->name('admin.banners.store');
+    Route::get('/admin/banners/{banner}/edit', [BannerController::class, 'edit'])->name('admin.banners.edit');
+    Route::put('/admin/banners/{banner}', [BannerController::class, 'update'])->middleware('throttle:10,1')->name('admin.banners.update');
+    Route::delete('/admin/banners/{banner}', [BannerController::class, 'destroy'])->middleware('throttle:10,1')->name('admin.banners.destroy');
+
     Route::view('/admin/design-system', 'admin.design-system')->name('admin.design-system');
 
     Route::get('/admin/settings/smtp', [SmtpSettingController::class, 'edit'])->name('admin.smtp.edit');

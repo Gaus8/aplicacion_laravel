@@ -3,6 +3,7 @@
 @section('title', 'Inicio · CMS Core')
 
 @section('content')
+    @include('public.partials.hero-banners')
     <section class="mx-auto flex w-full max-w-7xl flex-1 items-center px-4 py-16 sm:px-6 lg:px-8">
         <div class="grid w-full items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
             <div>

@@ -47,8 +47,34 @@ document.addEventListener('click', (event) => {
     const sidebarToggle = event.target.closest('[data-admin-sidebar-toggle]');
     if (sidebarToggle) toggleAdminSidebar();
 
+    const heroControl = event.target.closest('[data-hero-prev], [data-hero-next], [data-hero-dot]');
+    if (heroControl) moveHeroCarousel(heroControl);
+
     if (event.target.closest('[data-admin-sidebar-backdrop]')) closeMobileAdminSidebar();
 });
+
+function moveHeroCarousel(control) {
+    const carousel = control.closest('[data-hero-carousel]');
+    if (!carousel) return;
+
+    const slides = [...carousel.querySelectorAll('[data-hero-slide]')];
+    const dots = [...carousel.querySelectorAll('[data-hero-dot]')];
+    if (slides.length < 2) return;
+
+    const current = slides.findIndex((slide) => !slide.classList.contains('hidden'));
+    const requested = control.hasAttribute('data-hero-dot')
+        ? Number(control.dataset.heroDot)
+        : current + (control.hasAttribute('data-hero-next') ? 1 : -1);
+    const next = (requested + slides.length) % slides.length;
+
+    slides.forEach((slide, index) => {
+        const active = index === next;
+        slide.classList.toggle('hidden', !active);
+        slide.classList.toggle('flex', active);
+        slide.setAttribute('aria-hidden', String(!active));
+    });
+    dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === next)));
+}
 
 function activateTab(trigger) {
     const tabset = trigger.closest('[data-tabs]');
