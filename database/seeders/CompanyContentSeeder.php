@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Service;
 use App\Models\SocialLink;
-use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Models\Video;
 use Illuminate\Database\Seeder;
@@ -135,27 +134,7 @@ class CompanyContentSeeder extends Seeder
             );
         }
 
-        $members = [
-            ['name' => 'Valentina Ríos', 'role' => 'Directora de Tecnología', 'bio' => 'Lidera la estrategia tecnológica y acompaña a los equipos para convertir retos complejos en soluciones simples y escalables.', 'email' => 'valentina@usftechsolutions.com', 'image' => 'team-valentina.svg'],
-            ['name' => 'Andrés Mejía', 'role' => 'Líder de Ingeniería Cloud', 'bio' => 'Diseña plataformas resilientes y ayuda a las organizaciones a aprovechar la nube con seguridad, eficiencia y foco en el negocio.', 'email' => 'andres@usftechsolutions.com', 'image' => 'team-andres.svg'],
-            ['name' => 'Camila Torres', 'role' => 'Directora de Ciberseguridad', 'bio' => 'Integra la seguridad al ciclo de vida del software y promueve una cultura de prevención y aprendizaje continuo.', 'email' => 'camila@usftechsolutions.com', 'image' => 'team-camila.svg'],
-        ];
-
-        foreach ($members as $position => $member) {
-            $image = $member['image'];
-            unset($member['image']);
-
-            TeamMember::query()->updateOrCreate(
-                ['email' => $member['email']],
-                $member + [
-                    'profile_url' => null,
-                    'image_path' => 'seed/'.$image,
-                    'image_alt' => 'Retrato ilustrado de '.$member['name'],
-                    'position' => $position,
-                    'active' => true,
-                ],
-            );
-        }
+        $this->call(TeamMembersSeeder::class);
 
         $testimonials = [
             ['person_name' => 'Mariana López', 'role' => 'Gerente de Operaciones', 'organization' => 'Nexa Logística', 'quote' => 'USF entendió nuestros procesos antes de proponer tecnología. La nueva plataforma redujo tareas manuales y nos dio una operación mucho más clara.'],
@@ -186,7 +165,7 @@ class CompanyContentSeeder extends Seeder
 
     private function installSampleImages(): void
     {
-        foreach (['usf-tech-hero.svg', 'team-valentina.svg', 'team-andres.svg', 'team-camila.svg', 'article-software.svg', 'article-cloud.svg', 'article-security.svg'] as $image) {
+        foreach (['usf-tech-hero.svg', 'article-software.svg', 'article-cloud.svg', 'article-security.svg'] as $image) {
             $source = __DIR__.'/assets/'.$image;
             $contents = is_file($source) ? file_get_contents($source) : false;
 

@@ -60,7 +60,7 @@ class CompanyContentSeederTest extends TestCase
             ->assertSeeText('Nuestra misión')
             ->assertSeeText('Lo último en tecnología')
             ->assertSeeText('Conoce nuestras ideas')
-            ->assertSeeText('Valentina Ríos')
+            ->assertSeeText('Elmer Ferney Gordillo')
             ->assertSeeText('Mariana López')
             ->assertSeeText('GitHub');
     }
@@ -82,7 +82,9 @@ class CompanyContentSeederTest extends TestCase
 
         $this->get(route('team.public.index'))
             ->assertOk()
-            ->assertSeeText('Valentina Ríos')
+            ->assertSeeText('Elmer Ferney Gordillo')
+            ->assertSeeText('Uriel Stiven Garzon')
+            ->assertSeeText('David Santiago Torres')
             ->assertSee('seed/team-valentina.svg');
 
         $this->get(route('videos.public.index'))
