@@ -1,5 +1,35 @@
 import './bootstrap';
 
+document.getElementById('attachments')?.addEventListener('change', (event) => {
+    const fileList = document.getElementById('file-list');
+    if (!fileList) return;
+    fileList.replaceChildren();
+    Array.from(event.target.files ?? []).forEach((file) => {
+        const item = document.createElement('li');
+        item.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+        fileList.append(item);
+    });
+});
+
+document.getElementById('file-input')?.addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    const wrapper = document.getElementById('preview-wrapper');
+    const preview = document.getElementById('preview');
+    if (!wrapper || !preview) return;
+    if (!file) {
+        if (preview.dataset.objectUrl) URL.revokeObjectURL(preview.dataset.objectUrl);
+        delete preview.dataset.objectUrl;
+        wrapper.classList.add('hidden');
+        preview.removeAttribute('src');
+        return;
+    }
+    if (preview.dataset.objectUrl) URL.revokeObjectURL(preview.dataset.objectUrl);
+    const objectUrl = URL.createObjectURL(file);
+    preview.dataset.objectUrl = objectUrl;
+    preview.src = objectUrl;
+    wrapper.classList.remove('hidden');
+});
+
 document.addEventListener('click', (event) => {
     const opener = event.target.closest('[data-modal-open]');
     if (opener) document.getElementById(opener.dataset.modalOpen)?.showModal();

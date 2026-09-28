@@ -27,18 +27,3 @@
         </x-card>
     </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.getElementById('attachments')?.addEventListener('change', (event) => {
-        const fileList = document.getElementById('file-list');
-        if (!fileList) return;
-        fileList.replaceChildren();
-        Array.from(event.target.files ?? []).forEach((file) => {
-            const item = document.createElement('li');
-            item.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
-            fileList.append(item);
-        });
-    });
-</script>
-@endpush

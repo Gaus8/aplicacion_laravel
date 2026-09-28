@@ -36,6 +36,14 @@
                     </a>
                     @endif
                 @endforeach
+                @foreach ([['admin.seo.edit', 'admin.seo.*', 'SEO', 'seo.manage'], ['admin.users.index', 'admin.users.*', 'Usuarios', 'users.manage'], ['admin.roles.index', 'admin.roles.*', 'Roles y permisos', 'roles.manage']] as [$sidebarRoute, $sidebarPattern, $sidebarLabel, $sidebarPermission])
+                    @if(auth()->user()->hasPermission($sidebarPermission))
+                    <a href="{{ route($sidebarRoute) }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs($sidebarPattern), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs($sidebarPattern)]) aria-current="{{ request()->routeIs($sidebarPattern) ? 'page' : 'false' }}" title="{{ $sidebarLabel }}">
+                        <span class="grid h-5 w-5 shrink-0 place-items-center rounded border border-current text-[10px] font-bold" aria-hidden="true">{{ mb_substr($sidebarLabel, 0, 1) }}</span>
+                        <span data-sidebar-label class="whitespace-nowrap">{{ $sidebarLabel }}</span>
+                    </a>
+                    @endif
+                @endforeach
                 @if(auth()->user()->hasPermission('media.manage'))<a href="{{ route('admin.media.index') }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs('admin.media.*'), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs('admin.media.*')]) aria-current="{{ request()->routeIs('admin.media.*') ? 'page' : 'false' }}" title="Multimedia">
                     <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="m4 17 5-5 3 3 3-4 5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span data-sidebar-label class="whitespace-nowrap">Multimedia</span>

@@ -18,18 +18,18 @@
 - [x] Testimonios
 - [x] Contacto
 - [x] Redes sociales
-- [ ] SEO (implementación lista, pendiente de revisión)
-- [ ] Usuarios (implementación lista, pendiente de revisión)
-- [ ] Roles y permisos (implementación lista, pendiente de revisión)
+- [x] SEO
+- [x] Usuarios
+- [x] Roles y permisos
 - [x] SMTP
 - [x] OTP
 - [x] Auditoría
 - [x] Dashboard
-- [ ] Hardening
-- [ ] Testing
-- [ ] Despliegue
+- [x] Hardening
+- [x] Testing
+- [ ] Despliegue (guía segura lista; requiere entorno de staging/producción)
 ## Módulo actual
-Bloque módulos 12–14: SEO, Usuarios, Roles y permisos (implementación lista, pendiente de revisión)
+Preparación de despliegue seguro; pendiente validación en staging
 ## Decisiones técnicas vigentes
 - Roles y permisos son propios de la aplicación y controlan rutas web/API administrativas mediante middleware.
 - En la instalación inicial existente, el primer usuario recibe el rol Administrador; `php artisan cms:make-admin` permite crear/promover de forma interactiva sin credenciales por defecto.
@@ -49,14 +49,14 @@ Bloque módulos 12–14: SEO, Usuarios, Roles y permisos (implementación lista,
 - `/admin/testimonials`: gestión de testimonios (módulo cerrado).
 - `/admin/contact-messages` y `/contacto`: bandeja y formulario de contacto (módulo cerrado).
 - `/admin/social-links`: enlaces sociales compartidos en el navbar y footer (módulo cerrado).
-- `/admin/seo`, `/sitemap.xml` y `/robots.txt`: administración y publicación de metadatos SEO (pendiente de revisión).
-- `/admin/users`: gestión de usuarios, asignación de roles y estado de acceso (pendiente de revisión).
-- `/admin/roles`: definición de roles y permisos efectivos sobre rutas administrativas (pendiente de revisión).
+- `/admin/seo`, `/sitemap.xml` y `/robots.txt`: administración y publicación de metadatos SEO (módulo cerrado).
+- `/admin/users`: gestión de usuarios, asignación de roles y estado de acceso (módulo cerrado).
+- `/admin/roles`: definición de roles y permisos efectivos sobre rutas administrativas (módulo cerrado).
 ## Servicios compartidos
 - `App\Services\SmtpMailer`: usa la configuración activa para los envíos existentes; no guarda contraseñas en texto plano.
 ## Pendientes
-- Revisión funcional del bloque 12–14 antes de marcarlo cerrado y activar sus enlaces en el sidebar.
+- Validar configuración y smoke tests en un entorno real de staging antes del despliegue productivo.
 ## Última prueba exitosa
 - Fecha: 2026-09-28
 - Comando: `php artisan test`
-- Resultado: 79 pruebas y 481 aserciones aprobadas; módulos 3–5 y 7–11 cerrados; módulos 12–14 listos para revisión.
+- Resultado: 81 pruebas y 498 aserciones aprobadas; módulos funcionales 1–14 cerrados; Hardening y Testing cerrados; compilación Vite correcta. El despliegue queda pendiente de verificación en staging.

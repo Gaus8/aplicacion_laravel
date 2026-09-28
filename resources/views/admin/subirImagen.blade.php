@@ -29,25 +29,3 @@
         </x-card>
     </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.getElementById('file-input')?.addEventListener('change', (event) => {
-        const file = event.target.files?.[0];
-        const wrapper = document.getElementById('preview-wrapper');
-        const preview = document.getElementById('preview');
-        if (!wrapper || !preview) return;
-        if (!file) {
-            wrapper.classList.add('hidden');
-            preview.removeAttribute('src');
-            return;
-        }
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-            preview.src = reader.result;
-            wrapper.classList.remove('hidden');
-        });
-        reader.readAsDataURL(file);
-    });
-</script>
-@endpush
