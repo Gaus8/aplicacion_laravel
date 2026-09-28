@@ -12,6 +12,7 @@ class SocialPlatformUrl
         'x' => ['x.com', 'www.x.com', 'twitter.com', 'www.twitter.com'],
         'youtube' => ['youtube.com', 'www.youtube.com', 'youtu.be', 'www.youtu.be'],
         'whatsapp' => ['wa.me', 'api.whatsapp.com', 'www.whatsapp.com'],
+        'github' => ['github.com', 'www.github.com'],
     ];
 
     public function valid(string $platform, string $url): bool

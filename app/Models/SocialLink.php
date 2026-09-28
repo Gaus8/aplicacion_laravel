@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SocialLink extends Model
 {
-    public const PLATFORMS = ['facebook', 'instagram', 'linkedin', 'tiktok', 'x', 'youtube', 'whatsapp'];
+    public const PLATFORMS = ['facebook', 'instagram', 'linkedin', 'tiktok', 'x', 'youtube', 'whatsapp', 'github'];
 
     protected $fillable = ['platform', 'label', 'url', 'position', 'active', 'created_by', 'updated_by'];
 
