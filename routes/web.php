@@ -14,9 +14,6 @@ Route::get('/', function () {
 
 // Rutas para usuarios invitados (RedirectIfAuthenticated)
 Route::middleware(RedirectIfAuthenticated::class)->group(function () {
-    Route::get('/registro', [AuthController::class, 'showRegistro'])->name('registro');
-    Route::post('/registro', [AuthController::class, 'register']);
-
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     // Limitación a 5 intentos por minuto
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');

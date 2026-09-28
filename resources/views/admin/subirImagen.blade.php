@@ -1,106 +1,52 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir Imagen | Dashboard</title>
-    <link rel="stylesheet" href="{{ asset('css/subirImagen.css') }}">
-</head>
-<body>
+@extends('layouts.admin')
 
-    <!-- Navegación Superior -->
-    <header class="navbar">
-        <div class="navbar-container">
-            <div class="brand-wrapper">
-                <div class="brand-icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 2 2 002-2v-6a2 2 2 00-2-2H6a2 2 2 00-2 2v6a2 2 2 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                </div>
-                <span class="brand-title">Sistema Auth</span>
-            </div>
+@section('title', 'Subir imagen')
 
-            <a href="{{ route('dashboard') }}" class="btn-back-nav">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Volver al Dashboard
-            </a>
-        </div>
-    </header>
+@section('content')
+    <div class="mx-auto max-w-3xl space-y-6">
+        <x-breadcrumb :items="[['label' => 'Administración', 'url' => route('dashboard')], ['label' => 'Galería', 'url' => route('dashboard')], ['label' => 'Subir imagen']]" />
+        <header><h1 class="font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">Subir imagen</h1><p class="mt-2 text-sm text-slate-600">Añade una imagen a la galería multimedia.</p></header>
 
-    <!-- Contenido Principal -->
-    <main class="main-container">
-        
-        <div class="form-card">
-            
-            <div class="card-header">
-                <div class="header-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <h1 class="card-title">Subir Nueva Imagen</h1>
-                <p class="card-subtitle">Ingresa los datos requeridos para guardar tu archivo multimedia</p>
-            </div>
-
-            <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data">
+        <x-card title="Detalles del archivo" description="Completa el nombre y selecciona la imagen que quieres cargar.">
+            @if($errors->any())<x-alert class="mb-5" variant="danger" title="No se pudo guardar el archivo">Revisa la información e inténtalo nuevamente.</x-alert>@endif
+            <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                 @csrf
-
-                <!-- Campo Nombre -->
-                <div class="form-group">
-                    <label for="name" class="form-label">Nombre del archivo</label>
-                    <input type="text" class="form-input" id="name" name="name" placeholder="Ej. Imagen de perfil" required>
+                <x-input label="Nombre del archivo" name="name" value="{{ old('name') }}" placeholder="Ej. Imagen de portada" required />
+                <div>
+                    <label for="file-input" class="mb-1.5 block text-sm font-medium text-slate-700">Imagen</label>
+                    <label for="file-input" class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-surface-container-low px-5 py-10 text-center transition hover:border-secondary hover:bg-indigo-50/40">
+                        <span aria-hidden="true" class="mb-3 grid h-12 w-12 place-items-center rounded-lg bg-white text-secondary shadow-sm"><svg viewBox="0 0 24 24" fill="none" class="h-6 w-6"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="text-sm font-semibold text-slate-800">Haz clic para seleccionar una imagen</span>
+                        <span class="mt-1 text-xs text-slate-500">PNG, JPG, JPEG o WEBP</span>
+                        <input type="file" id="file-input" name="file" accept="image/*" required class="sr-only">
+                    </label>
+                    @error('file')<p class="mt-1.5 text-xs text-rose-700">{{ $message }}</p>@enderror
+                    <div id="preview-wrapper" class="mt-4 hidden overflow-hidden rounded-lg border border-slate-200 bg-white p-2"><img id="preview" src="#" alt="Vista previa de la imagen seleccionada" class="max-h-80 w-full rounded object-contain"></div>
                 </div>
-
-                <!-- Campo Archivo (Dropzone) -->
-                <div class="form-group">
-                    <label class="form-label">Seleccionar archivo</label>
-                    
-                    <div class="upload-dropzone">
-                        <input type="file" class="dropzone-file-input" id="file-input" name="file" accept="image/*" required>
-                        <svg class="dropzone-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                        </svg>
-                        <p class="dropzone-text"><span>Haz clic para seleccionar</span> o arrastra un archivo</p>
-                        <p class="dropzone-hint">Formatos soportados: PNG, JPG, JPEG, WEBP</p>
-                    </div>
-
-                    <!-- Vista previa de la imagen -->
-                    <div class="preview-container" id="preview-wrapper">
-                        <img id="preview" src="#" alt="Vista previa" class="preview-image">
-                    </div>
-                </div>
-
-                <!-- Botones -->
-                <div class="actions-group">
-                    <a href="{{ route('dashboard') }}" class="btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn-submit">Subir archivo</button>
-                </div>
+                <div class="flex justify-end gap-3 border-t border-slate-100 pt-5"><a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</a><x-button type="submit">Subir archivo</x-button></div>
             </form>
+        </x-card>
+    </div>
+@endsection
 
-        </div>
-
-    </main>
-
-    <!-- Script para la previsualización -->
-    <script>
-        document.getElementById('file-input').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const previewWrapper = document.getElementById('preview-wrapper');
-            const preview = document.getElementById('preview');
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    previewWrapper.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            } else {
-                previewWrapper.style.display = 'none';
-            }
+@push('scripts')
+<script>
+    document.getElementById('file-input')?.addEventListener('change', (event) => {
+        const file = event.target.files?.[0];
+        const wrapper = document.getElementById('preview-wrapper');
+        const preview = document.getElementById('preview');
+        if (!wrapper || !preview) return;
+        if (!file) {
+            wrapper.classList.add('hidden');
+            preview.removeAttribute('src');
+            return;
+        }
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            preview.src = reader.result;
+            wrapper.classList.remove('hidden');
         });
-    </script>
-</body>
-</html>
+        reader.readAsDataURL(file);
+    });
+</script>
+@endpush

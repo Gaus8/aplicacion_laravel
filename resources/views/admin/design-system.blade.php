@@ -1,14 +1,9 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Design system | CMS</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="min-h-screen bg-surface">
-    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+@extends('layouts.admin')
+
+@section('title', 'Sistema de diseño')
+
+@section('content')
+    <div class="space-y-8">
         <header class="mb-10 flex flex-col justify-between gap-5 border-b border-slate-200 pb-8 sm:flex-row sm:items-end">
             <div>
                 <x-breadcrumb :items="[['label' => 'Administración', 'url' => route('dashboard')], ['label' => 'Design system']]" class="mb-4" />
@@ -19,7 +14,7 @@
             <x-badge variant="success">Tailwind CSS 4</x-badge>
         </header>
 
-        <main class="space-y-8">
+        <div class="space-y-8">
             <section aria-label="Tokens visuales" class="grid gap-6 lg:grid-cols-2">
                 <x-card title="Colores" description="Paleta de superficies, marca y estados." padding="md">
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -87,8 +82,6 @@
                 <x-breadcrumb :items="[['label' => 'CMS', 'url' => '#cms'], ['label' => 'Contenido', 'url' => '#contenido'], ['label' => 'Resultados']]" class="mb-6" />
                 <x-empty-state title="No hay resultados" description="Prueba con otros términos o ajusta los filtros para encontrar contenido."><x-slot:action><x-button variant="secondary">Limpiar filtros</x-button></x-slot:action></x-empty-state>
             </x-card>
-        </main>
-        <footer class="mt-10 border-t border-slate-200 pt-5 text-xs text-slate-500">Vista temporal de componentes · Modern Enterprise CMS</footer>
+        </div>
     </div>
-</body>
-</html>
+@endsection

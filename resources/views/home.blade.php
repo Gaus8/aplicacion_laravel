@@ -1,92 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Auth System</title>
-    <!-- Vinculación del CSS independiente -->
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-</head>
-<body>
+@extends('layouts.public')
 
-    <!-- Header / Navbar -->
-    <header class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="brand">
-                <div class="brand-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 2 2 002-2v-6a2 2 2 00-2-2H6a2 2 2 00-2 2v6a2 2 2 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                </div>
-                <span class="brand-title">AuthSystem</span>
-            </a>
+@section('title', 'Inicio · CMS Core')
 
-            <nav class="nav-links">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
-                    <form action="{{ route('logout') }}" method="POST" class="inline-form">
-                        @csrf
-                        <button type="submit" class="btn-danger-sm">Cerrar Sesión</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="nav-link">Iniciar Sesión</a>
-                    <a href="{{ route('registro') }}" class="btn-primary btn-primary-sm">Registrarse</a>
-                @endauth
-            </nav>
-        </div>
-    </header>
-
-    <!-- Sección Principal -->
-    <main class="hero-container">
-        <div class="glow-effect"></div>
-
-        <div class="hero-card">
-            <div class="card-header">
-                <div class="header-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
-                </div>
-                <h1 class="card-title">Bienvenido</h1>
-                <p class="card-subtitle">Sistema centralizado de autenticación y control de acceso.</p>
+@section('content')
+    <section class="mx-auto flex w-full max-w-7xl flex-1 items-center px-4 py-16 sm:px-6 lg:px-8">
+        <div class="grid w-full items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+                <x-badge variant="primary">Plataforma de contenidos</x-badge>
+                <h1 class="mt-6 max-w-2xl font-display text-headline-xl-mobile font-bold tracking-tight text-slate-900 sm:text-headline-xl">Contenido claro. Gestión sencilla.</h1>
+                <p class="mt-5 max-w-xl text-body-lg text-slate-600">Un espacio central para administrar y publicar el contenido de tu organización.</p>
+                @guest
+                    <div class="mt-8"><a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-secondary px-5 py-2.5 text-base font-semibold text-on-secondary shadow-sm transition hover:bg-secondary-container focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary">Acceder al panel <span aria-hidden="true">→</span></a></div>
+                @endguest
             </div>
-
-            @auth
-                <!-- Usuario Autenticado -->
-                <div class="actions-stack">
-                    <div class="user-card">
-                        <div class="user-avatar">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                        <div class="user-details">
-                            <span class="user-status">Sesión Activa</span>
-                            <p class="user-name">{{ auth()->user()->name }}</p>
-                        </div>
+            <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-card sm:p-8">
+                @auth
+                    <div class="flex items-center gap-4">
+                        <span class="grid h-12 w-12 place-items-center rounded-full bg-secondary-fixed text-lg font-semibold text-on-secondary-fixed">{{ strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                        <div class="min-w-0"><p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Sesión activa</p><p class="truncate font-display text-lg font-semibold text-slate-900">{{ auth()->user()->name }}</p><p class="truncate text-sm text-slate-500">{{ auth()->user()->email }}</p></div>
                     </div>
-
-                    <a href="{{ route('dashboard') }}" class="btn-primary">
-                        Ir al Dashboard &rarr;
-                    </a>
-
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn-secondary">Cerrar Sesión</button>
-                    </form>
-                </div>
-            @else
-                <!-- Usuario Invitado -->
-                <div class="actions-stack">
-                    <a href="{{ route('login') }}" class="btn-primary">Iniciar Sesión</a>
-                    <a href="{{ route('registro') }}" class="btn-secondary">Crear una cuenta</a>
-                </div>
-            @endauth
+                    <div class="mt-6 flex flex-wrap gap-3"><a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-on-secondary shadow-sm transition hover:bg-secondary-container">Ir al panel</a><form action="{{ route('logout') }}" method="POST">@csrf<x-button type="submit" variant="secondary">Cerrar sesión</x-button></form></div>
+                @else
+                    <div class="mb-5 grid h-12 w-12 place-items-center rounded-lg bg-success-container text-success" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="h-6 w-6"><path d="m12 3 8 3v5c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6l8-3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.5 12 2.2 2.2 4.8-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <h2 class="font-display text-headline-md font-semibold text-slate-900">Administración protegida</h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Inicia sesión para acceder a tu espacio de trabajo.</p>
+                    <a href="{{ route('login') }}" class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline">Iniciar sesión <span aria-hidden="true">→</span></a>
+                @endauth
+            </div>
         </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        &copy; {{ date('Y') }} Auth System. Todos los derechos reservados.
-    </footer>
-
-</body>
-</html>
+    </section>
+@endsection

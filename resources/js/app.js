@@ -32,6 +32,22 @@ document.addEventListener('click', (event) => {
 
     const trigger = event.target.closest('[data-tab-trigger]');
     if (trigger) activateTab(trigger);
+
+    const passwordToggle = event.target.closest('[data-password-toggle]');
+    if (passwordToggle) {
+        const input = document.getElementById(passwordToggle.dataset.passwordToggle);
+        if (input) {
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            passwordToggle.setAttribute('aria-pressed', String(show));
+            passwordToggle.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        }
+    }
+
+    const sidebarToggle = event.target.closest('[data-admin-sidebar-toggle]');
+    if (sidebarToggle) toggleAdminSidebar();
+
+    if (event.target.closest('[data-admin-sidebar-backdrop]')) closeMobileAdminSidebar();
 });
 
 function activateTab(trigger) {
@@ -69,4 +85,49 @@ document.addEventListener('click', (event) => {
     document.querySelectorAll('details[open]').forEach((menu) => {
         if (!menu.contains(event.target)) menu.removeAttribute('open');
     });
+});
+
+function toggleAdminSidebar() {
+    const sidebar = document.querySelector('[data-admin-sidebar]');
+    const content = document.querySelector('[data-admin-content]');
+    const backdrop = document.querySelector('[data-admin-sidebar-backdrop]');
+    if (!sidebar || !content) return;
+
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+        const collapsed = sidebar.dataset.collapsed !== 'true';
+        sidebar.dataset.collapsed = String(collapsed);
+        sidebar.classList.toggle('lg:w-20', collapsed);
+        sidebar.classList.toggle('lg:w-72', !collapsed);
+        content.classList.toggle('lg:ml-20', collapsed);
+        content.classList.toggle('lg:ml-72', !collapsed);
+        document.querySelectorAll('[data-sidebar-label]').forEach((label) => label.classList.toggle('hidden', collapsed));
+        document.querySelectorAll('[data-admin-sidebar-toggle]').forEach((button) => {
+            button.setAttribute('aria-expanded', String(!collapsed));
+            button.setAttribute('aria-label', collapsed ? 'Expandir navegación' : 'Contraer navegación');
+        });
+        document.querySelector('[data-sidebar-chevron]')?.classList.toggle('rotate-180', collapsed);
+        return;
+    }
+
+    const open = sidebar.dataset.mobileOpen !== 'true';
+    sidebar.dataset.mobileOpen = String(open);
+    sidebar.classList.toggle('-translate-x-full', !open);
+    sidebar.classList.toggle('translate-x-0', open);
+    backdrop?.classList.toggle('hidden', !open);
+    document.querySelectorAll('[data-admin-sidebar-toggle]').forEach((button) => button.setAttribute('aria-expanded', String(open)));
+}
+
+function closeMobileAdminSidebar() {
+    const sidebar = document.querySelector('[data-admin-sidebar]');
+    const backdrop = document.querySelector('[data-admin-sidebar-backdrop]');
+    if (!sidebar) return;
+    sidebar.dataset.mobileOpen = 'false';
+    sidebar.classList.add('-translate-x-full');
+    sidebar.classList.remove('translate-x-0');
+    backdrop?.classList.add('hidden');
+    document.querySelectorAll('[data-admin-sidebar-toggle]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMobileAdminSidebar();
 });
