@@ -30,6 +30,15 @@ class BannerModuleTest extends TestCase
         $this->get(route('admin.banners.edit', $banner))->assertOk()->assertSeeText('Editar banner');
     }
 
+    public function test_closed_banner_module_is_active_in_the_sidebar(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('admin.banners.index'))
+            ->assertOk()
+            ->assertSee('href="'.route('admin.banners.index').'"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
     public function test_authorized_user_can_create_a_banner_and_store_its_relationships(): void
     {
         Storage::fake('public');

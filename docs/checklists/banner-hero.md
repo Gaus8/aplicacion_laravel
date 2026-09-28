@@ -1,6 +1,6 @@
 # Checklist del módulo 1 — Banners / Hero
 
-Estado: implementación lista para revisión; no cerrado.
+Estado: cerrado por confirmación del usuario.
 
 ## Datos y relaciones
 
@@ -28,4 +28,4 @@ Estado: implementación lista para revisión; no cerrado.
 - [x] Validación de imagen por contenido/tipo, formatos JPG/PNG/WebP y máximo 5 MB.
 - [x] Archivos gestionados mediante Laravel Storage en el disco `public`.
 - [x] Pruebas feature de acceso, CRUD, validación, fechas y presentación pública.
-- [ ] Revisión funcional del usuario.
+- [x] Revisión funcional del usuario.

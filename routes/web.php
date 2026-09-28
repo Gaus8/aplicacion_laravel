@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\SmtpSettingController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\HomeController;
 
 // Vista principal accesible para todos
@@ -32,6 +33,13 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
 // Rutas protegidas
 Route::middleware(Authenticate::class)->group(function () {
+    Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services.index');
+    Route::get('/admin/services/create', [ServiceController::class, 'create'])->name('admin.services.create');
+    Route::post('/admin/services', [ServiceController::class, 'store'])->middleware('throttle:10,1')->name('admin.services.store');
+    Route::get('/admin/services/{service}/edit', [ServiceController::class, 'edit'])->name('admin.services.edit');
+    Route::put('/admin/services/{service}', [ServiceController::class, 'update'])->middleware('throttle:10,1')->name('admin.services.update');
+    Route::delete('/admin/services/{service}', [ServiceController::class, 'destroy'])->middleware('throttle:10,1')->name('admin.services.destroy');
+
     Route::get('/admin/banners', [BannerController::class, 'index'])->name('admin.banners.index');
     Route::get('/admin/banners/create', [BannerController::class, 'create'])->name('admin.banners.create');
     Route::post('/admin/banners', [BannerController::class, 'store'])->middleware('throttle:10,1')->name('admin.banners.store');
