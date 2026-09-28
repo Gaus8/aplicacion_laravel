@@ -27,7 +27,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::post('/password/otp', [PasswordRecoveryController::class, 'verifyCode'])->middleware('throttle:10,1')->name('password.otp.verify');
     Route::post('/password/otp/resend', [PasswordRecoveryController::class, 'resendCode'])->middleware('throttle:3,1')->name('password.otp.resend');
     Route::get('/password/reset', [PasswordRecoveryController::class, 'resetForm'])->name('password.reset.form');
-    Route::put('/password/reset', [PasswordRecoveryController::class, 'resetPassword'])->name('password.update');
+    Route::put('/password/reset', [PasswordRecoveryController::class, 'resetPassword'])->middleware('throttle:5,1')->name('password.update');
 });
 
 // Rutas protegidas
@@ -48,12 +48,12 @@ Route::middleware(Authenticate::class)->group(function () {
     Route::get('/admin/subir-imagen', [MediaController::class, 'create'])->name('admin.media.subirImagen');
     
     // Ruta para procesar y guardar el archivo (la que usa tu formulario)
-    Route::post('/admin/media', [MediaController::class, 'store'])->name('admin.media.store');
+    Route::post('/admin/media', [MediaController::class, 'store'])->middleware('throttle:10,1')->name('admin.media.store');
 
     Route::get('/admin/emails', [MediaController::class, 'emails'])->name('admin.media.emails');
 
     // Ruta para procesar el envío del formulario
-    Route::post('/admin/emails/send', [MediaController::class, 'sendEmail'])->name('admin.media.sendEmail');
+    Route::post('/admin/emails/send', [MediaController::class, 'sendEmail'])->middleware('throttle:5,1')->name('admin.media.sendEmail');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

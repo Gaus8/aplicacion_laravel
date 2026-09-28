@@ -16,6 +16,10 @@
                 <span data-sidebar-label class="whitespace-nowrap font-display text-lg font-semibold tracking-tight text-slate-900">CMS Core</span>
             </div>
             <nav aria-label="Navegación administrativa" class="flex-1 space-y-1 px-3 py-5">
+                <a href="{{ route('dashboard') }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs('dashboard'), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs('dashboard')]) aria-current="{{ request()->routeIs('dashboard') ? 'page' : 'false' }}" title="Dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="11" width="7" height="10" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="14" width="8" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg>
+                    <span data-sidebar-label class="whitespace-nowrap">Dashboard</span>
+                </a>
                 <a href="{{ route('admin.media.index') }}" @class(['flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition', 'bg-primary-container text-white' => request()->routeIs('admin.media.*'), 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => !request()->routeIs('admin.media.*')]) aria-current="{{ request()->routeIs('admin.media.*') ? 'page' : 'false' }}" title="Multimedia">
                     <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="m4 17 5-5 3 3 3-4 5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span data-sidebar-label class="whitespace-nowrap">Multimedia</span>

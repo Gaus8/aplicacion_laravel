@@ -24,12 +24,12 @@
 - [x] SMTP
 - [x] OTP
 - [x] Auditoría
-- [ ] Dashboard (implementación lista, pendiente de revisión)
+- [x] Dashboard
 - [ ] Hardening
 - [ ] Testing
 - [ ] Despliegue
 ## Módulo actual
-Dashboard (pendiente de revisión)
+Hardening (pendiente de revisión)
 ## Decisiones técnicas vigentes
 - ...
 ## Rutas importantes
@@ -37,7 +37,7 @@ Dashboard (pendiente de revisión)
 - `/admin/settings/smtp`: configuración de correo SMTP (módulo cerrado).
 - `/password/forgot`, `/password/otp` y `/password/reset`: recuperación de contraseña por OTP (módulo cerrado).
 - `/admin/audit`: historial de auditoría (módulo cerrado).
-- `/admin/dashboard`: resumen con datos existentes (pendiente de revisión).
+- `/admin/dashboard`: resumen con datos existentes (módulo cerrado).
 ## Servicios compartidos
 - `App\Services\SmtpMailer`: usa la configuración activa para los envíos existentes; no guarda contraseñas en texto plano.
 ## Pendientes
@@ -45,4 +45,4 @@ Dashboard (pendiente de revisión)
 ## Última prueba exitosa
 - Fecha: 2026-09-28
 - Comando: `php artisan test`
-- Resultado: 27 pruebas y 148 aserciones aprobadas; Dashboard pendiente de revisión.
+- Resultado: 31 pruebas y 175 aserciones aprobadas; Dashboard cerrado y Hardening listo para revisión.
