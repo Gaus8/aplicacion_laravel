@@ -24,6 +24,8 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
 // Rutas protegidas
 Route::middleware(Authenticate::class)->group(function () {
+    Route::view('/admin/design-system', 'admin.design-system')->name('admin.design-system');
+
     Route::get('/admin/dashboard', function (Request $request) {
         // Obtenemos los archivos multimedia para la galería
         $media = \App\Models\Media::all();
