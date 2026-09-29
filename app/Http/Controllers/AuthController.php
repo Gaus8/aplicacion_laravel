@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Mail\ContactMessage;
 use App\Services\AuditLogger;
 
@@ -24,12 +26,17 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // 1. ASIGNAR A LA VARIABLE $user
-        $user = User::create([
-            'name' => $credentials['name'],
-            'email' => $credentials['email'],
-            'password' => Hash::make($credentials['password']),
-        ]);
+        $user = DB::transaction(function () use ($credentials): User {
+            $user = User::create([
+                'name' => $credentials['name'],
+                'email' => $credentials['email'],
+                'password' => Hash::make($credentials['password']),
+            ]);
+
+            $this->grantAdministratorToFirstAccount($user);
+
+            return $user;
+        }, 3);
 
         // Petición desde Postman / API
         if ($request->wantsJson()) {
@@ -67,6 +74,7 @@ class AuthController extends Controller
                 if ($request->wantsJson()) return response()->json(['message' => 'Las credenciales no coinciden con nuestros registros.'], 401);
                 return back()->withErrors(['email' => 'Las credenciales no coinciden con nuestros registros.'])->onlyInput('email');
             }
+            $this->grantAdministratorToFirstAccount($user);
             $auditLogger->record('auth.login.succeeded', 'success', $user, 'Inicio de sesión');
 
             if ($request->wantsJson()) {
@@ -96,6 +104,22 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Las credenciales no coinciden con nuestros registros.',
         ])->onlyInput('email');
+    }
+
+    /** Bootstrap the documented first account without granting later registrations admin access. */
+    private function grantAdministratorToFirstAccount(User $user): void
+    {
+        DB::transaction(function () use ($user): void {
+            $role = Role::query()->where('slug', 'administrador')->lockForUpdate()->first();
+
+            if (!$role || $role->users()->where('is_active', true)->exists()) {
+                return;
+            }
+
+            if (User::query()->where('is_active', true)->count() === 1 && $user->is_active) {
+                $user->roles()->syncWithoutDetaching([$role->id]);
+            }
+        }, 3);
     }
 
     public function logout(Request $request, AuditLogger $auditLogger)
