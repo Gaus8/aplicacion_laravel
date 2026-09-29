@@ -40,7 +40,9 @@
         </form>
 
         <div class="mt-7 border-t border-slate-200 pt-5 text-center">
-            <p class="text-xs text-slate-500">El acceso está disponible para cuentas autorizadas.</p>
+            <p class="text-sm text-slate-600">¿Aún no tienes una cuenta?</p>
+            <a href="{{ route('registro') }}" class="mt-2 inline-flex text-sm font-semibold text-secondary underline-offset-4 transition hover:text-secondary-container hover:underline">Crear una cuenta</a>
+            <p class="mt-3 text-xs text-slate-500">El registro no concede permisos administrativos automáticamente.</p>
         </div>
     </section>
 @endsection

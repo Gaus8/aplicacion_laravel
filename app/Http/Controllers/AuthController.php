@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     public function showRegistro()
     {
-        return view('auth.registro');
+        return view('auth.Registro');
     }
 
     public function register(Request $request)

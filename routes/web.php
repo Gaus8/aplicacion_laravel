@@ -45,6 +45,8 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     // Limitación a 5 intentos por minuto
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::get('/registro', [AuthController::class, 'showRegistro'])->name('registro');
+    Route::post('/registro', [AuthController::class, 'register'])->middleware('throttle:3,1')->name('registro.store');
 
     Route::get('/password/forgot', [PasswordRecoveryController::class, 'requestForm'])->name('password.request');
     Route::post('/password/forgot', [PasswordRecoveryController::class, 'sendCode'])->middleware('throttle:3,1')->name('password.email');
