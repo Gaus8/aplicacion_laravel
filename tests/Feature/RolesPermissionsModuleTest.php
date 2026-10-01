@@ -29,6 +29,15 @@ class RolesPermissionsModuleTest extends TestCase
         $this->assertDatabaseHas('roles', ['slug' => 'editor']);
     }
 
+    public function test_authenticated_user_without_a_role_is_denied_admin_access(): void
+    {
+        $user = User::factory()->create();
+        $user->roles()->detach();
+
+        $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
+        $this->get(route('admin.banners.index'))->assertForbidden();
+    }
+
     public function test_system_administrator_role_cannot_be_edited_or_deleted(): void
     {
         $user = User::factory()->create();
