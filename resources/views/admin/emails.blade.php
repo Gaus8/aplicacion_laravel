@@ -9,7 +9,7 @@
 
         <x-card title="Redactar mensaje" description="Completa el destinatario, el asunto y el contenido del mensaje.">
             @if($errors->any())<x-alert class="mb-5" variant="danger" title="No se pudo enviar el correo">Revisa los datos e inténtalo nuevamente.</x-alert>@endif
-            <form action="{{ route('admin.media.sendEmail') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+            <form action="{{ route('admin.emails.send') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                 @csrf
                 <x-input label="Correo destinatario" type="email" name="recipient" value="{{ old('recipient') }}" required placeholder="ejemplo@correo.com" />
                 <x-input label="Asunto" type="text" name="subject" value="{{ old('subject') }}" required placeholder="Asunto del correo" />

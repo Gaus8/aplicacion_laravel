@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\IndexMediaRequest;
 use App\Http\Requests\Admin\StoreMediaRequest;
 use Illuminate\Http\Request;
-use App\Models\Media; 
+use App\Models\Media;
+use App\Models\EmailSent;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -22,11 +23,27 @@ class MediaController extends Controller
         Gate::authorize('viewAny', Media::class);
 
         $search = trim((string) $request->validated('search', ''));
-        $media = Media::query()
-            ->when($search !== '', fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
+        $mediaQuery = Media::query()
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', '%' . $search . '%'));
+
+        if ($this->wantsJsonResponse($request)) {
+            $items = $mediaQuery->latest()->get();
+
+            return response()->json([
+                'data' => $items->map(fn (Media $item) => [
+                    'id' => $item->getKey(),
+                    'name' => $item->name,
+                    'mime_type' => $item->mime_type,
+                    'size' => $item->size,
+                    'url' => route('admin.media.file', $item),
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                ]),
+                'count' => $items->count(),
+            ]);
+        }
+
+        $media = $mediaQuery->latest()->paginate(12)->withQueryString();
 
         return view('admin.media.index', compact('media', 'search'));
     }
@@ -66,6 +83,21 @@ class MediaController extends Controller
             'media_id' => $media->getKey(),
         ]);
 
+        if ($this->wantsJsonResponse($request)) {
+            $fileUrl = route('admin.media.file', $media);
+
+            return response()->json([
+                'message' => 'Imagen cargada correctamente.',
+                'data' => [
+                    'id' => $media->getKey(),
+                    'name' => $media->name,
+                    'mime_type' => $media->mime_type,
+                    'size' => $media->size,
+                    'url' => $fileUrl,
+                ],
+            ], 201, ['Location' => $fileUrl]);
+        }
+
         return redirect()->route('admin.media.index')->with('success', 'Imagen cargada correctamente.');
     }
 
@@ -97,8 +129,25 @@ class MediaController extends Controller
     /**
      * Muestra la vista de envío de correos.
      */
-    public function emails()
+    public function emails(Request $request)
     {
+        if ($this->wantsJsonResponse($request)) {
+            $emails = EmailSent::query()->latest()->get();
+
+            return response()->json([
+                'data' => $emails->map(fn (EmailSent $email) => [
+                    'id' => $email->getKey(),
+                    'user_id' => $email->user_id,
+                    'recipient' => $email->recipient,
+                    'subject' => $email->subject,
+                    'message' => $email->message,
+                    'created_at' => $email->created_at,
+                    'updated_at' => $email->updated_at,
+                ]),
+                'count' => $emails->count(),
+            ]);
+        }
+
         return view('admin.emails');
     }
 
@@ -137,6 +186,27 @@ class MediaController extends Controller
             'email_sent_id' => $sentEmail->getKey(),
         ]);
 
+        if ($this->wantsJsonResponse($request)) {
+            return response()->json([
+                'message' => 'Correo electrónico enviado y registrado correctamente.',
+                'data' => [
+                    'id' => $sentEmail->getKey(),
+                    'user_id' => $sentEmail->user_id,
+                    'recipient' => $sentEmail->recipient,
+                    'subject' => $sentEmail->subject,
+                    'message' => $sentEmail->message,
+                    'created_at' => $sentEmail->created_at,
+                ],
+            ], 200);
+        }
+
         return redirect()->route('dashboard')->with('success', 'Correo electrónico enviado y registrado correctamente.');
+    }
+
+    private function wantsJsonResponse(Request $request): bool
+    {
+        $accept = strtolower((string) $request->header('Accept', ''));
+
+        return $request->wantsJson() || str_contains($accept, 'application/json');
     }
 }

@@ -155,10 +155,10 @@ Route::middleware([Authenticate::class, EnsureAdminPermission::class])->group(fu
     // Ruta para procesar y guardar el archivo (la que usa tu formulario)
     Route::post('/admin/media', [MediaController::class, 'store'])->middleware('throttle:10,1')->name('admin.media.store');
 
-    Route::get('/admin/emails', [MediaController::class, 'emails'])->name('admin.media.emails');
+    Route::get('/admin/emails', [MediaController::class, 'emails'])->name('admin.emails.index');
 
     // Ruta para procesar el envío del formulario
-    Route::post('/admin/emails/send', [MediaController::class, 'sendEmail'])->middleware('throttle:5,1')->name('admin.media.sendEmail');
+    Route::post('/admin/emails/send', [MediaController::class, 'sendEmail'])->middleware('throttle:5,1')->name('admin.emails.send');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

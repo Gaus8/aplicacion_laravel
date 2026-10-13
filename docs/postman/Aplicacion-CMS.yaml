@@ -1,0 +1,2063 @@
+openapi: 3.1.0
+info:
+  title: Aplicación CMS - API y rutas web
+  version: 1.0.0
+  description: >-
+    Especificación generada desde routes/api.php y routes/web.php. Las rutas web son principalmente HTML con sesión; consulte README.md para el flujo CSRF y limitaciones.
+servers:
+  - url: http://127.0.0.1:8000
+tags:
+  - name: "API - JSON y Bearer"
+  - name: "Web - Público"
+  - name: "Web - Autenticación (sesión + CSRF)"
+  - name: "Web - Recuperación OTP (sesión + CSRF)"
+  - name: "Web - Administración (sesión + CSRF)"
+paths:
+  "/api/login":
+    post:
+      tags:
+        - "API - JSON y Bearer"
+      operationId: "_api_login"
+      summary: "/api/login"
+      description: "Ruta API JSON. Nombre Laravel: . API bajo /api; enviar Accept: application/json. Login entrega token Bearer."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: Successful JSON response }
+        '401': { description: Unauthenticated or invalid credentials }
+        '403': { description: Authenticated but not authorized }
+  "/api/dashboard":
+    get:
+      tags:
+        - "API - JSON y Bearer"
+      operationId: "_api_dashboard"
+      summary: "/api/dashboard"
+      description: "Ruta API JSON. Nombre Laravel: . API bajo /api; enviar Accept: application/json. Login entrega token Bearer."
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: Successful JSON response }
+        '401': { description: Unauthenticated or invalid credentials }
+        '403': { description: Authenticated but not authorized }
+  "/api/logout":
+    post:
+      tags:
+        - "API - JSON y Bearer"
+      operationId: "_api_logout"
+      summary: "/api/logout"
+      description: "Ruta API JSON. Nombre Laravel: . API bajo /api; enviar Accept: application/json. Login entrega token Bearer."
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: Successful JSON response }
+        '401': { description: Unauthenticated or invalid credentials }
+        '403': { description: Authenticated but not authorized }
+  "/":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "home"
+      summary: "home"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: home. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/nosotros":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "about_public"
+      summary: "about.public"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: about.public. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/noticias":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "posts_public_index"
+      summary: "posts.public.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: posts.public.index. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/noticias/{post:slug}":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "posts_public_show"
+      summary: "posts.public.show"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: posts.public.show. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "post:slug"
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/videos":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "videos_public_index"
+      summary: "videos.public.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: videos.public.index. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/equipo":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "team_public_index"
+      summary: "team.public.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: team.public.index. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/contacto":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "contact_create"
+      summary: "contact.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: contact.create. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/contacto":
+    post:
+      tags:
+        - "Web - Público"
+      operationId: "contact_store"
+      summary: "contact.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: contact.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/sitemap.xml":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "seo_sitemap"
+      summary: "seo.sitemap"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: seo.sitemap. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/robots.txt":
+    get:
+      tags:
+        - "Web - Público"
+      operationId: "seo_robots"
+      summary: "seo.robots"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: seo.robots. Ruta web; respuesta HTML o descarga."
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/logout":
+    post:
+      tags:
+        - "Web - Público"
+      operationId: "logout"
+      summary: "logout"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: logout. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/login":
+    get:
+      tags:
+        - "Web - Autenticación (sesión + CSRF)"
+      operationId: "login"
+      summary: "login"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: login. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/login":
+    post:
+      tags:
+        - "Web - Autenticación (sesión + CSRF)"
+      operationId: "_login"
+      summary: "/login"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: . Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/registro":
+    get:
+      tags:
+        - "Web - Autenticación (sesión + CSRF)"
+      operationId: "registro"
+      summary: "registro"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: registro. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/registro":
+    post:
+      tags:
+        - "Web - Autenticación (sesión + CSRF)"
+      operationId: "registro_store"
+      summary: "registro.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: registro.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/forgot":
+    get:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_request"
+      summary: "password.request"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.request. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/forgot":
+    post:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_email"
+      summary: "password.email"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.email. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/otp":
+    get:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_otp_form"
+      summary: "password.otp.form"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.otp.form. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/otp":
+    post:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_otp_verify"
+      summary: "password.otp.verify"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.otp.verify. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/otp/resend":
+    post:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_otp_resend"
+      summary: "password.otp.resend"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.otp.resend. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/reset":
+    get:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_reset_form"
+      summary: "password.reset.form"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.reset.form. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/password/reset":
+    put:
+      tags:
+        - "Web - Recuperación OTP (sesión + CSRF)"
+      operationId: "password_update"
+      summary: "password.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: password.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/seo":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_seo_edit"
+      summary: "admin.seo.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.seo.edit. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/seo":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_seo_update"
+      summary: "admin.seo.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.seo.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/users":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_users_index"
+      summary: "admin.users.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.users.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/users/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_users_create"
+      summary: "admin.users.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.users.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/users":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_users_store"
+      summary: "admin.users.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.users.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/users/{user}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_users_edit"
+      summary: "admin.users.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.users.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "user"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/users/{user}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_users_update"
+      summary: "admin.users.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.users.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "user"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/users/{user}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_users_destroy"
+      summary: "admin.users.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.users.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "user"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/roles":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_roles_index"
+      summary: "admin.roles.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.roles.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/roles/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_roles_create"
+      summary: "admin.roles.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.roles.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/roles":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_roles_store"
+      summary: "admin.roles.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.roles.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/roles/{role}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_roles_edit"
+      summary: "admin.roles.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.roles.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "role"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/roles/{role}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_roles_update"
+      summary: "admin.roles.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.roles.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "role"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/roles/{role}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_roles_destroy"
+      summary: "admin.roles.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.roles.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "role"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/about":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_about_edit"
+      summary: "admin.about.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.about.edit. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/about":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_about_update"
+      summary: "admin.about.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.about.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/categories":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_categories_index"
+      summary: "admin.categories.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.categories.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/categories/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_categories_create"
+      summary: "admin.categories.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.categories.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/categories":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_categories_store"
+      summary: "admin.categories.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.categories.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/categories/{category}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_categories_edit"
+      summary: "admin.categories.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.categories.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "category"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/categories/{category}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_categories_update"
+      summary: "admin.categories.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.categories.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "category"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/categories/{category}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_categories_destroy"
+      summary: "admin.categories.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.categories.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "category"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/posts":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_posts_index"
+      summary: "admin.posts.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.posts.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/posts/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_posts_create"
+      summary: "admin.posts.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.posts.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/posts":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_posts_store"
+      summary: "admin.posts.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.posts.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/posts/{post}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_posts_edit"
+      summary: "admin.posts.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.posts.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "post"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/posts/{post}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_posts_update"
+      summary: "admin.posts.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.posts.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "post"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/posts/{post}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_posts_destroy"
+      summary: "admin.posts.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.posts.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "post"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/videos":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_videos_index"
+      summary: "admin.videos.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.videos.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/videos/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_videos_create"
+      summary: "admin.videos.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.videos.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/videos":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_videos_store"
+      summary: "admin.videos.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.videos.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/videos/{video}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_videos_edit"
+      summary: "admin.videos.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.videos.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "video"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/videos/{video}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_videos_update"
+      summary: "admin.videos.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.videos.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "video"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/videos/{video}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_videos_destroy"
+      summary: "admin.videos.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.videos.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "video"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/team":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_team_index"
+      summary: "admin.team.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.team.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/team/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_team_create"
+      summary: "admin.team.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.team.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/team":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_team_store"
+      summary: "admin.team.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.team.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/team/{team_member}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_team_edit"
+      summary: "admin.team.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.team.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "team_member"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/team/{team_member}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_team_update"
+      summary: "admin.team.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.team.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "team_member"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/team/{team_member}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_team_destroy"
+      summary: "admin.team.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.team.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "team_member"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/testimonials":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_testimonials_index"
+      summary: "admin.testimonials.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.testimonials.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/testimonials/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_testimonials_create"
+      summary: "admin.testimonials.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.testimonials.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/testimonials":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_testimonials_store"
+      summary: "admin.testimonials.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.testimonials.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/testimonials/{testimonial}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_testimonials_edit"
+      summary: "admin.testimonials.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.testimonials.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "testimonial"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/testimonials/{testimonial}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_testimonials_update"
+      summary: "admin.testimonials.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.testimonials.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "testimonial"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/testimonials/{testimonial}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_testimonials_destroy"
+      summary: "admin.testimonials.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.testimonials.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "testimonial"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/contact-messages":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_contact_messages_index"
+      summary: "admin.contact-messages.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.contact-messages.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/contact-messages/{submission}/read":
+    patch:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_contact_messages_read"
+      summary: "admin.contact-messages.read"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.contact-messages.read. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "submission"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/social-links":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_social_links_index"
+      summary: "admin.social-links.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.social-links.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/social-links/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_social_links_create"
+      summary: "admin.social-links.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.social-links.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/social-links":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_social_links_store"
+      summary: "admin.social-links.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.social-links.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/social-links/{social_link}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_social_links_edit"
+      summary: "admin.social-links.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.social-links.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "social_link"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/social-links/{social_link}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_social_links_update"
+      summary: "admin.social-links.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.social-links.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "social_link"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/social-links/{social_link}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_social_links_destroy"
+      summary: "admin.social-links.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.social-links.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "social_link"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/services":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_services_index"
+      summary: "admin.services.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.services.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/services/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_services_create"
+      summary: "admin.services.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.services.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/services":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_services_store"
+      summary: "admin.services.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.services.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/services/{service}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_services_edit"
+      summary: "admin.services.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.services.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "service"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/services/{service}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_services_update"
+      summary: "admin.services.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.services.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "service"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/services/{service}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_services_destroy"
+      summary: "admin.services.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.services.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "service"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/banners":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_banners_index"
+      summary: "admin.banners.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.banners.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/banners/create":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_banners_create"
+      summary: "admin.banners.create"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.banners.create. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/banners":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_banners_store"
+      summary: "admin.banners.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.banners.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/banners/{banner}/edit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_banners_edit"
+      summary: "admin.banners.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.banners.edit. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "banner"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/banners/{banner}":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_banners_update"
+      summary: "admin.banners.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.banners.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "banner"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/banners/{banner}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_banners_destroy"
+      summary: "admin.banners.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.banners.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "banner"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/design-system":
+    view:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_design_system"
+      summary: "admin.design-system"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.design-system. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/settings/smtp":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_smtp_edit"
+      summary: "admin.smtp.edit"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.smtp.edit. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/settings/smtp":
+    put:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_smtp_update"
+      summary: "admin.smtp.update"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.smtp.update. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/settings/smtp/test":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_smtp_test"
+      summary: "admin.smtp.test"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.smtp.test. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/audit":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_audit_index"
+      summary: "admin.audit.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.audit.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/media":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_index"
+      summary: "admin.media.index"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.index. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/media/{media}/file":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_file"
+      summary: "admin.media.file"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.file. Ruta web; respuesta HTML o descarga."
+      parameters:
+        - in: path
+          name: "media"
+          required: true
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/media/{media}":
+    delete:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_destroy"
+      summary: "admin.media.destroy"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.destroy. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: path
+          name: "media"
+          required: true
+          schema: { type: string }
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/dashboard":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "dashboard"
+      summary: "dashboard"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: dashboard. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/subir-imagen":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_subirImagen"
+      summary: "admin.media.subirImagen"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.subirImagen. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/media":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_store"
+      summary: "admin.media.store"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.store. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/emails":
+    get:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_emails"
+      summary: "admin.media.emails"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.emails. Ruta web; respuesta HTML o descarga."
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+  "/admin/emails/send":
+    post:
+      tags:
+        - "Web - Administración (sesión + CSRF)"
+      operationId: "admin_media_sendEmail"
+      summary: "admin.media.sendEmail"
+      description: "Ruta Web (HTML / sesión). Nombre Laravel: admin.media.sendEmail. Ruta web mutante: requiere CSRF y cookies de sesión en flujos web; las respuestas suelen ser redirecciones HTML."
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          description: CSRF token for the current web session; alternatively submit _token in form data.
+          schema: { type: string }
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: HTML page or successful response }
+        '302': { description: Redirect after web form processing }
+        '403': { description: Authenticated but not authorized }
+        '419': { description: CSRF token missing, invalid, or expired }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum personal access token
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: laravel_session

@@ -12,7 +12,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('admin.media.index') }}" class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50">Abrir Multimedia</a>
-            <a href="{{ route('admin.media.emails') }}" class="inline-flex items-center justify-center rounded-md bg-secondary px-3.5 py-2 text-sm font-medium text-on-secondary shadow-sm transition hover:bg-secondary-container">Enviar correo</a>
+            <a href="{{ route('admin.emails.index') }}" class="inline-flex items-center justify-center rounded-md bg-secondary px-3.5 py-2 text-sm font-medium text-on-secondary shadow-sm transition hover:bg-secondary-container">Enviar correo</a>
         </div>
     </header>
 
@@ -58,7 +58,7 @@
             <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 <a href="{{ route('admin.media.index') }}" class="flex items-center justify-between rounded-md bg-surface-container-low px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-indigo-50 hover:text-secondary"><span>Galería multimedia</span><span aria-hidden="true">→</span></a>
                 <a href="{{ route('admin.media.subirImagen') }}" class="flex items-center justify-between rounded-md bg-surface-container-low px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-indigo-50 hover:text-secondary"><span>Cargar imagen</span><span aria-hidden="true">→</span></a>
-                <a href="{{ route('admin.media.emails') }}" class="flex items-center justify-between rounded-md bg-surface-container-low px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-indigo-50 hover:text-secondary"><span>Enviar correo</span><span aria-hidden="true">→</span></a>
+                <a href="{{ route('admin.emails.index') }}" class="flex items-center justify-between rounded-md bg-surface-container-low px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-indigo-50 hover:text-secondary"><span>Enviar correo</span><span aria-hidden="true">→</span></a>
                 <a href="{{ route('admin.audit.index') }}" class="flex items-center justify-between rounded-md bg-surface-container-low px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-indigo-50 hover:text-secondary"><span>Registro de auditoría</span><span aria-hidden="true">→</span></a>
             </div>
         </x-card>
