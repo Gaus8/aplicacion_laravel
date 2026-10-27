@@ -1,5 +1,26 @@
 import './bootstrap';
 
+const bannerImageInput = document.querySelector('[data-banner-image-input]');
+const bannerForm = document.querySelector('[data-banner-form]');
+const bannerSizeAlert = document.querySelector('[data-banner-image-size-alert]');
+const maxBannerImageSize = 5 * 1024 * 1024;
+
+function updateBannerImageSizeAlert() {
+    const tooLarge = (bannerImageInput?.files?.[0]?.size ?? 0) > maxBannerImageSize;
+    bannerSizeAlert?.classList.toggle('hidden', !tooLarge);
+    bannerImageInput?.setAttribute('aria-invalid', String(tooLarge));
+    return tooLarge;
+}
+
+bannerImageInput?.addEventListener('change', updateBannerImageSizeAlert);
+bannerForm?.addEventListener('submit', (event) => {
+    if (updateBannerImageSizeAlert()) {
+        event.preventDefault();
+        bannerSizeAlert?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        bannerImageInput?.focus();
+    }
+});
+
 document.getElementById('attachments')?.addEventListener('change', (event) => {
     const fileList = document.getElementById('file-list');
     if (!fileList) return;

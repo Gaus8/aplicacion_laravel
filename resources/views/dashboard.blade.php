@@ -46,7 +46,7 @@
                     <div class="flex h-full flex-col items-center justify-end gap-2">
                         <span class="text-xs tabular-nums text-slate-500">{{ $day['count'] }}</span>
                         <div class="flex h-32 w-full items-end justify-center rounded-t bg-surface-container-low">
-                            <span class="w-full max-w-10 rounded-t bg-secondary" style="height: {{ $day['height'] }}%" title="{{ $day['count'] }} eventos"></span>
+                            <progress class="activity-progress h-full w-full max-w-10 self-center" max="100" value="{{ $day['height'] }}" aria-label="{{ $day['count'] }} eventos"></progress>
                         </div>
                         <span class="text-xs capitalize text-slate-500">{{ $day['label'] }}</span>
                     </div>

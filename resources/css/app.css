@@ -154,6 +154,30 @@
 .home-reveal { animation: usf-fade-up 700ms cubic-bezier(.2,.75,.25,1) both; }
 .home-story-image { box-shadow: 0 24px 70px -38px rgb(15 23 42 / 55%); }
 
+.activity-progress {
+    appearance: none;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0.25rem 0.25rem 0 0;
+    background: var(--color-surface-container-low);
+}
+
+.activity-progress::-webkit-progress-bar {
+    background: var(--color-surface-container-low);
+}
+
+.activity-progress::-webkit-progress-value {
+    border-radius: 0.25rem 0.25rem 0 0;
+    background: var(--color-secondary);
+}
+
+.activity-progress::-moz-progress-bar {
+    border-radius: 0.25rem 0.25rem 0 0;
+    background: var(--color-secondary);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .home-hero-image,
     .home-reveal { animation: none; }

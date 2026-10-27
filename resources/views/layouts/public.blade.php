@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta property="csp-nonce" nonce="{{ Vite::cspNonce() }}">
     @php
         $seoTitle = trim($__env->yieldContent('title')) ?: ($seoSettings?->default_title ?? config('app.name'));
         $seoDescription = trim($__env->yieldContent('meta_description')) ?: ($seoSettings?->default_description ?? '');

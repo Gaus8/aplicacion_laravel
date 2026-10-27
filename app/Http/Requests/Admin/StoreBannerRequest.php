@@ -9,6 +9,14 @@ use Illuminate\Validation\Validator;
 
 class StoreBannerRequest extends FormRequest
 {
+    public function messages(): array
+    {
+        return [
+            'image.max' => 'La imagen del banner no puede superar los 5 MB. Selecciona un archivo más pequeño.',
+            'image.uploaded' => 'No se pudo cargar la imagen. Comprueba que pese menos de 5 MB e inténtalo de nuevo.',
+        ];
+    }
+
     public function authorize(): bool
     {
         return $this->user()?->can('create', Banner::class) ?? false;

@@ -11,9 +11,10 @@
         </div>
 
         @if($errors->any())<x-alert variant="danger"><p class="font-semibold">Revisa los campos indicados:</p><ul class="mt-1 list-inside list-disc">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></x-alert>@endif
+        <div data-banner-image-size-alert class="hidden"><x-alert variant="danger" title="La imagen es demasiado grande">El archivo seleccionado supera el límite de 5 MB. Elige una imagen más pequeña para continuar.</x-alert></div>
 
         <x-card>
-            <form action="{{ $isEditing ? route('admin.banners.update', $banner) : route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form data-banner-form action="{{ $isEditing ? route('admin.banners.update', $banner) : route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @if($isEditing) @method('PUT') @endif
                 <div class="grid gap-5 md:grid-cols-2">
@@ -23,7 +24,7 @@
                     <x-input name="cta_label" label="Texto del botón (opcional)" maxlength="40" :value="old('cta_label', $banner->cta_label)" />
                     <x-input name="cta_url" label="URL del botón (opcional)" type="url" maxlength="2048" placeholder="https://ejemplo.com" :value="old('cta_url', $banner->cta_url)" />
                     <x-input name="position" label="Orden" type="number" min="0" max="10000" required :value="old('position', $banner->position ?? 0)" />
-                    <div class="space-y-1.5"><label for="image" class="block text-sm font-medium text-slate-700">Imagen {{ $isEditing ? '(opcional para conservar la actual)' : '' }}</label><input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" @required(!$isEditing) class="block w-full rounded-md border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-700 file:mr-4 file:rounded-md file:border-0 file:bg-secondary-fixed file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-on-secondary-fixed"><p class="text-xs text-slate-500">JPG, PNG o WebP; máximo 5 MB.</p>@error('image')<p class="text-xs text-rose-700">{{ $message }}</p>@enderror</div>
+                    <div class="space-y-1.5"><label for="image" class="block text-sm font-medium text-slate-700">Imagen {{ $isEditing ? '(opcional para conservar la actual)' : '' }}</label><input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" data-banner-image-input @required(!$isEditing) class="block w-full rounded-md border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-700 file:mr-4 file:rounded-md file:border-0 file:bg-secondary-fixed file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-on-secondary-fixed"><p class="text-xs text-slate-500">JPG, PNG o WebP; máximo 5 MB.</p>@error('image')<p class="text-xs text-rose-700">{{ $message }}</p>@enderror</div>
                     <x-input name="starts_at" label="Mostrar desde (opcional)" type="datetime-local" :value="old('starts_at', $banner->starts_at?->format('Y-m-d\TH:i'))" />
                     <x-input name="ends_at" label="Mostrar hasta (opcional)" type="datetime-local" :value="old('ends_at', $banner->ends_at?->format('Y-m-d\TH:i'))" />
                 </div>

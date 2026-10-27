@@ -57,6 +57,6 @@ Preparación de despliegue seguro; pendiente validación en staging
 ## Pendientes
 - Validar configuración y smoke tests en un entorno real de staging antes del despliegue productivo.
 ## Última prueba exitosa
-- Fecha: 2026-09-28
+- Fecha: 2026-10-26
 - Comando: `php artisan test`
-- Resultado: 81 pruebas y 498 aserciones aprobadas; módulos funcionales 1–14 cerrados; Hardening y Testing cerrados; compilación Vite correcta. El despliegue queda pendiente de verificación en staging.
+- Resultado: 90 pruebas y 578 aserciones aprobadas; módulos funcionales 1–14 cerrados; hardening y testing verificados; compilación Vite correcta. El despliegue queda pendiente de verificación en staging.

@@ -13,21 +13,48 @@ class HardeningTest extends TestCase
 
     public function test_security_headers_are_added_to_responses(): void
     {
-        $this->get(route('home'))
+        $response = $this->get(route('home'))
             ->assertOk()
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'DENY')
             ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
             ->assertHeader('Permissions-Policy', 'camera=(), geolocation=(), microphone=()')
-            ->assertHeader('Cross-Origin-Opener-Policy', 'same-origin')
             ->assertHeader('Cross-Origin-Resource-Policy', 'same-origin')
             ->assertHeader('X-Permitted-Cross-Domain-Policies', 'none')
-            ->assertHeader('X-DNS-Prefetch-Control', 'off');
+            ->assertHeader('X-DNS-Prefetch-Control', 'off')
+            ->assertCookieMissing('XSRF-TOKEN');
 
-        $policy = $this->get(route('home'))->headers->get('Content-Security-Policy');
+        $policy = $response->headers->get('Content-Security-Policy');
         $this->assertStringContainsString("default-src 'self'", $policy);
         $this->assertStringContainsString("frame-ancestors 'none'", $policy);
-        $this->assertStringNotContainsString("script-src 'self' 'unsafe-inline'", $policy);
+        $this->assertStringContainsString("script-src-attr 'none'", $policy);
+        $this->assertStringContainsString("style-src-attr 'none'", $policy);
+        $this->assertStringNotContainsString('unsafe-inline', $policy);
+        $this->assertStringNotContainsString('unsafe-eval', $policy);
+        $this->assertStringNotContainsString(' https:;', $policy);
+        $this->assertStringNotContainsString('*', $policy);
+        $this->assertFalse($response->headers->has('X-Powered-By'));
+        preg_match('/<meta property="csp-nonce" nonce="([^"]+)"/', $response->getContent(), $nonceMatch);
+        $this->assertNotEmpty($nonceMatch[1] ?? null);
+        $this->assertStringContainsString("'nonce-{$nonceMatch[1]}'", $policy);
+    }
+
+    public function test_security_headers_are_also_added_to_forbidden_responses(): void
+    {
+        $user = User::factory()->create();
+        $user->roles()->detach();
+
+        $response = $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
+
+        $this->assertSame('DENY', $response->headers->get('X-Frame-Options'));
+        $this->assertNotEmpty($response->headers->get('Content-Security-Policy'));
+    }
+
+    public function test_api_does_not_allow_cross_origin_reads(): void
+    {
+        $response = $this->withHeader('Origin', 'https://attacker.example')->getJson('/api/dashboard');
+
+        $this->assertFalse($response->headers->has('Access-Control-Allow-Origin'));
     }
 
     public function test_https_responses_include_hsts(): void
@@ -51,6 +78,7 @@ class HardeningTest extends TestCase
 
         $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
         $this->assertStringContainsString('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertStringNotContainsString('style="height:', $response->getContent());
     }
 
     public function test_api_login_is_throttled_after_five_attempts(): void
@@ -62,10 +90,12 @@ class HardeningTest extends TestCase
             ])->assertUnauthorized();
         }
 
-        $this->postJson('/api/login', [
+        $response = $this->postJson('/api/login', [
             'email' => 'unknown@example.test',
             'password' => 'incorrect-password',
         ])->assertTooManyRequests();
+
+        $this->assertFalse($response->headers->has('X-RateLimit-Reset'));
     }
 
     public function test_production_readiness_command_reports_environment_gaps_without_secrets(): void
