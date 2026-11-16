@@ -2,11 +2,32 @@
 ## Entorno
 - Laravel: 12
 - PHP: 8.2
-- Base de datos: SQLite
+- Node.js: 20 o superior
+- Base de datos local: SQLite en `database/database.sqlite` (sesiones, caché y colas también usan la base)
 - Frontend: Blade + Tailwind + Vite
+## Arranque local
+La guía completa está en `README.md`. Hace falta Composer en el PATH; XAMPP solo aporta PHP en `C:\xampp\php\php.exe`. En PowerShell, desde la raíz del proyecto y solo la primera vez:
+
+```powershell
+composer install
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+php artisan key:generate
+if (-not (Test-Path database\database.sqlite)) { New-Item -ItemType File database\database.sqlite | Out-Null }
+php artisan migrate
+php artisan db:seed
+php artisan storage:link
+npm install
+composer run dev
+```
+
+Abre `http://127.0.0.1:8000`. El administrador se crea con `php artisan cms:make-admin` (no hay credenciales por defecto) y entra por `/login`.
+
+`php artisan key:generate` solo en la primera instalación: repetirlo invalida sesiones y secretos cifrados. `php artisan migrate` aplica migraciones pendientes y no borra datos. No usar `migrate:fresh` ni `migrate:refresh`.
+
+En una copia que ya tiene `.env` y `APP_KEY`: `composer install`, `npm install`, `php artisan migrate` y `npm run build` (o `npm run dev`).
 ## Módulos cerrados
 - [x] Fase 0 - Base
-- [ ] Login seguro
+- [x] Login seguro
 - [x] Banner / Hero
 - [x] Servicios
 - [x] Nosotros
@@ -32,7 +53,9 @@
 Preparación de despliegue seguro; pendiente validación en staging
 ## Decisiones técnicas vigentes
 - Roles y permisos son propios de la aplicación y controlan rutas web/API administrativas mediante middleware.
-- En la instalación inicial existente, el primer usuario recibe el rol Administrador; `php artisan cms:make-admin` permite crear/promover de forma interactiva sin credenciales por defecto.
+- La base local es SQLite. MySQL solo aplica si se cambia `.env` y se crea la base antes de migrar.
+- La migración de roles crea el rol `administrador`. `php artisan cms:make-admin` crea o promueve una cuenta sin credenciales por defecto (contraseña de al menos 12 caracteres, con mayúsculas, minúsculas, números y símbolos).
+- Si no hay un administrador activo y solo existe una cuenta activa, el registro en `/registro` o el primer inicio de sesión le asigna ese rol. Las cuentas posteriores no lo reciben.
 ## Rutas importantes
 - `/admin/media`: galería Multimedia (módulo cerrado).
 - `/admin/settings/smtp`: configuración de correo SMTP (módulo cerrado).
